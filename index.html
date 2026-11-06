@@ -1495,7 +1495,7 @@ function acctBox(){
   if(!AUTH.ready) return '';
   if(AUTH.user) return `<div class="acct on"><span>계정에 저장되고 있어요.</span><button onclick="signOut()">로그아웃</button></div>`;
   const btn=(k,sym,label)=>`<button class="sso" onclick="signIn('${k}')">${sym}<span>${label}</span></button>`;
-  return `<div class="acct"><p>지금 하트는 이 브라우저에만 남아 있어요.<br>계정에 담아두면 어디서든 다시 볼 수 있어요.</p>
+  return `<div class="acct"><p>${STATE.bm.length?`지금 담은 하트 ${STATE.bm.length}개는 이 브라우저에만 남아 있어요.<br>로그인하면 그대로 계정으로 옮겨져요.`:'지금 하트는 이 브라우저에만 남아 있어요.<br>계정에 담아두면 어디서든 다시 볼 수 있어요.'}</p>
     <div class="acct-btns">
       ${btn('kakao',KAKAO_SYM,'카카오로 계속하기')}
       ${NAVER_PROVIDER?btn(NAVER_PROVIDER,NAVER_SYM,'네이버로 계속하기'):''}
@@ -1505,7 +1505,10 @@ function acctBox(){
 }
 function signIn(provider){ if(!AUTH.sb) return;
   AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); }
-function signOut(){ if(!AUTH.sb) return; AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; if(TAB==='bookmarks') render(); }); }
+/* 로그아웃하면 이 브라우저에 남은 목록을 비워요. 계정에 이미 저장돼 있으니 다음 로그인 때 그대로 돌아와요.
+   (안 비우면 같은 브라우저에서 다른 사람이 로그인할 때 앞사람 하트가 섞여요) */
+function clearLocalList(){ STATE.bm=[]; STATE.pins=[]; STATE.subs={}; STATE.no={}; STATE.nextNo=1; try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){} }
+function signOut(){ if(!AUTH.sb) return; AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); drawFav(); if(TAB==='bookmarks') render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
 function mergeIn(remote){
   const r=remote||{}, rb=(r.bm||[]), rp=(r.pins||[]);
@@ -1519,7 +1522,9 @@ function syncUp(){ if(!AUTH||SYNC_OFF||!AUTH.user||!AUTH.sb) return; clearTimeou
 async function onSignedIn(user){
   AUTH.user=user;
   const {data}=await AUTH.sb.from('user_state').select('state').eq('user_id',user.id).maybeSingle();
-  SYNC_OFF=true; mergeIn(data&&data.state); save(); SYNC_OFF=false; syncUp(); render();
+  const rb=((data&&data.state&&data.state.bm)||[]), moved=STATE.bm.filter(id=>!rb.includes(id)).length;
+  SYNC_OFF=true; mergeIn(data&&data.state); save(); SYNC_OFF=false; syncUp(); render(); drawFav();
+  if(moved) toast(`하트 ${moved}개를 계정으로 옮겼어요`,'pink');
 }
 function initAuth(){
   /* 미리보기: 실서비스 도메인이 아닌 곳(아티팩트 등)에서는 연결 전이어도 화면만 보여줘요. 버튼은 동작하지 않아요 */
@@ -1530,7 +1535,7 @@ function initAuth(){
       AUTH.ready=true;
       const {data}=await AUTH.sb.auth.getSession();
       if(data&&data.session) await onSignedIn(data.session.user); else if(TAB==='bookmarks') render();
-      AUTH.sb.auth.onAuthStateChange((ev,ses)=>{ if(ev==='SIGNED_IN'&&ses&&(!AUTH.user||AUTH.user.id!==ses.user.id)) onSignedIn(ses.user); if(ev==='SIGNED_OUT'){ AUTH.user=null; if(TAB==='bookmarks') render(); } });
+      AUTH.sb.auth.onAuthStateChange((ev,ses)=>{ if(ev==='SIGNED_IN'&&ses&&(!AUTH.user||AUTH.user.id!==ses.user.id)) onSignedIn(ses.user); if(ev==='SIGNED_OUT'&&AUTH.user){ AUTH.user=null; clearLocalList(); drawFav(); if(TAB==='bookmarks') render(); } });
     }catch(e){} };
   document.head.appendChild(sc);
 }
