@@ -518,6 +518,10 @@ main .bcard .mini .sign{background:#fff;color:#1c1b19;font-weight:500;border-rad
 .ix-ic:active .hg{transform:scale(.82);transition:transform .07s ease-out}
 .ix-env:not(.on) .hg{opacity:.75}
 .ix-env.pop .hg{animation:envpop 1s .02s;transform-origin:50% 65%}
+.contact{margin-top:18px;padding:30px 4px 26px;border-top:1px dashed rgba(255,255,255,.85);border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff}
+.contact .c-emoji{font-size:34px;line-height:1;margin-bottom:16px}
+.contact p{font-size:13px;line-height:1.8;margin:0 0 12px;word-break:keep-all}
+.contact .c-mail{display:inline-block;margin-top:10px;padding:11px 20px;border-radius:999px;background:#fff;color:#c9708a;font-size:14px;font-weight:700;letter-spacing:.01em;text-decoration:none}
 .ix-empty{margin-top:18px;padding:22px 0;border-top:1px dashed rgba(255,255,255,.85);border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff;font-size:13px;line-height:1.7}
 .ix-row>*{transition:opacity .3s ease}
 .ix-row.pending>*{opacity:.2;transition:opacity 3s cubic-bezier(.4,0,.6,1)}
@@ -547,7 +551,7 @@ body.ix-dragging .ix-list{touch-action:none}
 .rail .rlink + .rlink{margin-top:-4px}
 
 html.p1 #newsBtn,html.p1 .rail .subbtn,html.p1 .rail .subbtn + .rdiv,html.p1 .ix-env{display:none}
-html.p1 nav{grid-template-columns:repeat(2,1fr)}
+html.p1 nav{grid-template-columns:repeat(3,1fr)}
 
 /* ── 1차: 상세 = 무드 이미지 + 상단 액션 ── */
 html.p1 .rail{display:none}
@@ -1402,13 +1406,21 @@ function openBrandNews(id){
 /* ---------- 렌더 ---------- */
 /* 1차 런칭: 홈 + 하트만. 2차 기능(소식함·보드·MY)은 PHASE2=true로 다시 켜기 */
 const PHASE2=false;
-const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks');
+const MAIL='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M3.8 6.3 12 13l8.2-6.7"/></svg>';
+const CONTACT_EMAIL='team@pocket-index.com';
+const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
+function vContact(){
+  return `<div class="contact"><div class="c-emoji" aria-hidden="true">🫧🩷</div>
+  <p>Pocket Index는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.</p>
+  <p>서비스 문의, 기능 요청, 브랜드 입점 제안도<br>모두 이 주소로 보내 주세요.<br>꼼꼼히 읽고 답장할게요.</p>
+  <a class="c-mail" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></div>`;
+}
 if(!PHASE2) document.documentElement.classList.add('p1');
 function navTo(k){ if(VIEW.id) closeViewer(); closeSheet(); TAB=k; render(); scrollTo(0,0); }
 function swapAnim(el){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }
 let LASTTAB=null;
 function render(){
-  const v={discover:vDiscover,bookmarks:vBookmarks,boards:vBoards,profile:vProfile}[TAB]();
+  const v={discover:vDiscover,bookmarks:vBookmarks,boards:vBoards,profile:vProfile,contact:vContact}[TAB]();
   $('#view').innerHTML=v;
   if(LASTTAB!==null && LASTTAB!==TAB) swapAnim($('#view')); LASTTAB=TAB;
   if(TAB==='discover') mountFeed();
