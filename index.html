@@ -522,6 +522,8 @@ main .bcard .mini .sign{background:#fff;color:#1c1b19;font-weight:500;border-rad
 .contact .c-emoji{font-size:27px;line-height:1;margin-bottom:16px}
 .contact p{font-size:13px;line-height:1.8;margin:0 0 12px;word-break:keep-all}
 .contact .c-mail{margin-top:14px;font-size:15px;font-weight:700;letter-spacing:.01em;color:#fff;user-select:all;-webkit-user-select:all}
+.share{padding:26px 4px;border-bottom:1px dashed rgba(255,255,255,.85);text-align:center}
+.share .s-btn{padding:11px 20px;border-radius:999px;background:#fff;color:#c9708a;font-size:14px;font-weight:700}
 .contact .c-copy{margin-top:8px;font-size:12px;color:#fff;text-decoration:underline;text-underline-offset:3px;opacity:.9}
 .ix-empty{margin-top:18px;padding:22px 0;border-top:1px dashed rgba(255,255,255,.85);border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff;font-size:13px;line-height:1.7}
 .ix-row>*{transition:opacity .3s ease}
@@ -1415,7 +1417,18 @@ function vContact(){
   <p>Pocket Index는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.</p>
   <p>서비스 문의, 기능 요청, 브랜드 노출 제안도<br>모두 아래 메일로 보내주세요.<br>꼼꼼히 읽고 답장 드릴게요.</p>
   <div class="c-mail">${CONTACT_EMAIL}</div>
-  <button class="c-copy" onclick="copyEmail()">복사하기</button></div>`;
+  <button class="c-copy" onclick="copyEmail()">복사하기</button></div>
+  <div class="share"><button class="s-btn" onclick="shareSite()">Pocket Index 친구에게 공유하기</button></div>`;
+}
+const SITE_URL='https://pocket-index.com/';
+function copyText(text,msg){
+  const done=()=>toast(msg);
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(text).then(done,fallback); else fallback();
+  function fallback(){ const t=document.createElement('textarea'); t.value=text; t.setAttribute('readonly',''); t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('복사하지 못했어요'); } t.remove(); }
+}
+function shareSite(){
+  if(navigator.share){ navigator.share({title:'Pocket Index',url:SITE_URL}).catch(e=>{ if(e&&e.name!=='AbortError') copyText(SITE_URL,'링크를 복사했어요'); }); }
+  else copyText(SITE_URL,'링크를 복사했어요. 친구에게 붙여넣어 보내 주세요');
 }
 function copyEmail(){
   const done=()=>toast('메일 주소를 복사했어요');
