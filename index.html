@@ -518,10 +518,11 @@ main .bcard .mini .sign{background:#fff;color:#1c1b19;font-weight:500;border-rad
 .ix-ic:active .hg{transform:scale(.82);transition:transform .07s ease-out}
 .ix-env:not(.on) .hg{opacity:.75}
 .ix-env.pop .hg{animation:envpop 1s .02s;transform-origin:50% 65%}
-.contact{margin-top:18px;padding:30px 4px 26px;border-top:1px dashed rgba(255,255,255,.85);border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff}
-.contact .c-emoji{font-size:34px;line-height:1;margin-bottom:16px}
+.contact{margin-top:18px;padding:30px 4px 26px;border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff}
+.contact .c-emoji{font-size:27px;line-height:1;margin-bottom:16px}
 .contact p{font-size:13px;line-height:1.8;margin:0 0 12px;word-break:keep-all}
-.contact .c-mail{display:inline-block;margin-top:10px;padding:11px 20px;border-radius:999px;background:#fff;color:#c9708a;font-size:14px;font-weight:700;letter-spacing:.01em;text-decoration:none}
+.contact .c-mail{margin-top:14px;font-size:15px;font-weight:700;letter-spacing:.01em;color:#fff;user-select:all;-webkit-user-select:all}
+.contact .c-copy{margin-top:8px;font-size:12px;color:#fff;text-decoration:underline;text-underline-offset:3px;opacity:.9}
 .ix-empty{margin-top:18px;padding:22px 0;border-top:1px dashed rgba(255,255,255,.85);border-bottom:1px dashed rgba(255,255,255,.85);text-align:center;color:#fff;font-size:13px;line-height:1.7}
 .ix-row>*{transition:opacity .3s ease}
 .ix-row.pending>*{opacity:.2;transition:opacity 3s cubic-bezier(.4,0,.6,1)}
@@ -1412,8 +1413,14 @@ const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boar
 function vContact(){
   return `<div class="contact"><div class="c-emoji" aria-hidden="true">🫧🩷</div>
   <p>Pocket Index는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.</p>
-  <p>서비스 문의, 기능 요청, 브랜드 입점 제안도<br>모두 이 주소로 보내 주세요.<br>꼼꼼히 읽고 답장할게요.</p>
-  <a class="c-mail" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></div>`;
+  <p>서비스 문의, 기능 요청, 브랜드 노출 제안도<br>모두 이 주소로 보내 주세요.<br>꼼꼼히 읽고 답장 드릴게요.</p>
+  <div class="c-mail">${CONTACT_EMAIL}</div>
+  <button class="c-copy" onclick="copyEmail()">복사하기</button></div>`;
+}
+function copyEmail(){
+  const done=()=>toast('메일 주소를 복사했어요');
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(CONTACT_EMAIL).then(done,fallback); else fallback();
+  function fallback(){ const t=document.createElement('textarea'); t.value=CONTACT_EMAIL; t.setAttribute('readonly',''); t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('주소를 길게 눌러 복사해 주세요'); } t.remove(); }
 }
 if(!PHASE2) document.documentElement.classList.add('p1');
 function navTo(k){ if(VIEW.id) closeViewer(); closeSheet(); TAB=k; render(); scrollTo(0,0); }
