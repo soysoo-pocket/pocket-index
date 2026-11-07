@@ -596,8 +596,8 @@ html.p1 .vname{max-width:46vw}
 .vact .va-heart.pop .hg{animation:hop .85s cubic-bezier(.3,.7,.3,1)}
 /* 하트 위치 안내(처음 3번만): 검은 하트가 한 번 커졌다 작아져요 */
 .vact .va-heart{position:relative}
-.vact .va-heart.hint .hg{animation:hintBeat .7s ease-in-out 1}
-@keyframes hintBeat{0%,100%{transform:scale(1)}45%{transform:scale(1.3)}}
+.vact .va-heart.hint .hg{animation:hintBeat 1.2s cubic-bezier(.45,0,.55,1) 1}
+@keyframes hintBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 @media (prefers-reduced-motion:reduce){.vact .va-heart.hint .hg{animation:none}}
 html.p1 .site{background:transparent;position:relative}
 .bp-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
@@ -1496,7 +1496,7 @@ function heartHint(id){
   if(PHASE2||STATE.bm.length||(STATE.hintN||0)>=3) return;
   STATE.hintN=(STATE.hintN||0)+1; save();
   setTimeout(()=>{ const b=$('#hangBtn'); if(!b||VIEW.id!==id||STATE.bm.includes(id)) return;
-    b.classList.add('hint'); setTimeout(()=>b.classList.remove('hint'),800);
+    b.classList.add('hint'); setTimeout(()=>b.classList.remove('hint'),1300);
   },650);
 }
 function openViewer(id,fromBack){
