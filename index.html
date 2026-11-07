@@ -1863,8 +1863,12 @@ function clearLocalList(){ STATE.bm=[]; STATE.pins=[]; STATE.subs={}; STATE.no={
 async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   if(!confirm('탈퇴하면 계정과 계정에 저장된 하트가 모두 지워지고, 되돌릴 수 없어요.\n정말 탈퇴할까요?')) return;
   clearTimeout(SYNC_T); SYNC_READY=false;
-  const {error}=await AUTH.sb.rpc('delete_my_account');
+  /* 서버 기능(delete-account)이 카카오 연결 끊기 + 계정 삭제를 함께 해요. 없으면 계정 삭제만 해요 */
+  let error=null, kakao='';
+  try{ const r=await AUTH.sb.functions.invoke('delete-account',{method:'POST'}); if(r.error||!r.data||!r.data.ok) throw r.error||new Error('fn'); kakao=r.data.kakao||''; }
+  catch(e){ ({error}=await AUTH.sb.rpc('delete_my_account')); kakao='fallback'; }
   if(error){ toast('탈퇴하지 못했어요. 잠시 후 다시 시도해 주세요'); return; }
+  ga('account_delete_detail',{reason:kakao});
   ga('account_delete');
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
   clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
