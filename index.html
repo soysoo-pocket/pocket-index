@@ -1731,7 +1731,7 @@ async function sha256hex(t){ const h=await crypto.subtle.digest('SHA-256',new Te
 async function signIn(provider){ if(!AUTH.sb) return;
   if(provider!=='kakao'){ AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); return; }
   const state=rnd(), nonce=rnd();
-  try{ sessionStorage.setItem('pi-kakao',JSON.stringify({state,nonce,tab:TAB})); }catch(e){}
+  try{ localStorage.setItem('pi-kakao',JSON.stringify({state,nonce,tab:TAB})); }catch(e){}
   const q=new URLSearchParams({client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,response_type:'code',scope:'openid,account_email',state,nonce:await sha256hex(nonce)});
   location.href='https://kauth.kakao.com/oauth/authorize?'+q;
 }
@@ -1739,18 +1739,21 @@ async function signIn(provider){ if(!AUTH.sb) return;
 async function finishKakao(){
   const u=new URL(location.href), code=u.searchParams.get('code'), err=u.searchParams.get('error'), st=u.searchParams.get('state');
   if(!code&&!err) return;
-  let saved={}; try{ saved=JSON.parse(sessionStorage.getItem('pi-kakao')||'{}'); sessionStorage.removeItem('pi-kakao'); }catch(e){}
+  let saved={}; try{ saved=JSON.parse(localStorage.getItem('pi-kakao')||'{}'); localStorage.removeItem('pi-kakao'); }catch(e){}
   history.replaceState(null,'',location.pathname);
   if(saved.tab){ TAB=saved.tab; }
-  if(err||!saved.state||st!==saved.state){ if(err!=='access_denied') toast('로그인하지 못했어요. 다시 시도해 주세요'); render(); return; }
+  if(err||!saved.state||st!==saved.state){ if(err!=='access_denied') loginFail(err?('K-'+err):(!saved.state?'S0':'S1')); render(); return; }
   try{
     const r=await fetch('https://kauth.kakao.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
       body:new URLSearchParams({grant_type:'authorization_code',client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,code})});
     const t=await r.json();
-    if(!t.id_token) throw new Error(t.error_code||t.error||'no id_token');
+    if(!t.id_token) throw new Error('T-'+(t.error_code||t.error||'no-id-token'));
     const {error}=await AUTH.sb.auth.signInWithIdToken({provider:'kakao',token:t.id_token,access_token:t.access_token,nonce:saved.nonce});
-    if(error) throw error;
-  }catch(e){ console.warn('kakao login',e); toast('로그인하지 못했어요. 다시 시도해 주세요'); render(); }
+    if(error) throw new Error('A-'+(error.code||error.status||'')+' '+(error.message||''));
+  }catch(e){ console.warn('kakao login',e); loginFail(String(e&&e.message||e)); render(); }
+}
+/* 로그인 실패 안내: 원인 확인용 짧은 코드를 함께 보여줘요 */
+function loginFail(code){ const el=$('#toast'); toast('로그인하지 못했어요 ('+code.slice(0,60)+')'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),6000);
 }
 /* 로그아웃하면 이 브라우저에 남은 목록을 비워요. 계정에 이미 저장돼 있으니 다음 로그인 때 그대로 돌아와요.
    (안 비우면 같은 브라우저에서 다른 사람이 로그인할 때 앞사람 하트가 섞여요) */
