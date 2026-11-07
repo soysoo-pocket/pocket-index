@@ -1491,10 +1491,10 @@ function siteHTML(m){
    <div class="ms-grid">${prods.map(p=>`<div class="ms-p"><div class="ph" style="background:${ac}33">${garment(p.t,p.c)}</div><div class="pn">${p.n}</div><div class="pp">${p.sale?won(Math.round(p.pr*.8/100)*100)+`<s>${won(p.pr)}</s>`:won(p.pr)}</div></div>`).join('')}</div>
    <div class="ms-foot">${esc(m.name)} · 샘플 쇼핑몰 화면 (가상 브랜드)<br>실서비스에선 브랜드 자사몰이 이 영역에 그대로 열려요.</div></div>`;
 }
-/* 처음 브랜드 3곳을 열 때만 하트 위치를 알려줘요. 하트를 한 번이라도 누르면 더 이상 안 보여요 */
+/* 처음 브랜드 3곳을 열 때만 하트 위치를 알려줘요. 이미 하트한 브랜드에서는 안 보여요 */
 function heartHint(id){
-  if(PHASE2||STATE.bm.length||(STATE.hintN||0)>=3) return;
-  STATE.hintN=(STATE.hintN||0)+1; save();
+  if(PHASE2||STATE.bm.includes(id)||(STATE.hint2||0)>=3) return;
+  STATE.hint2=(STATE.hint2||0)+1; save();
   setTimeout(()=>{ const b=$('#hangBtn'); if(!b||VIEW.id!==id||STATE.bm.includes(id)) return;
     b.classList.add('hint'); setTimeout(()=>b.classList.remove('hint'),1300);
   },650);
