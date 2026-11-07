@@ -693,6 +693,7 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 .ix-login{margin:4px 0 0}
 html.p1 main#view:has(.fx-foot){display:flex;flex-direction:column}
 .ft-gap{flex:0 0 44px}
+.contact .ct-first{margin-top:0 !important}
 .fx-foot{margin:auto -10px calc(-84px - env(safe-area-inset-bottom));padding:26px 18px calc(104px + env(safe-area-inset-bottom));background:#f4f4f2;color:var(--fx-mu);font-size:11.5px;line-height:1.6}
 .fx-foot .fx-pl{color:var(--fx-mu);border-color:var(--fx-mu)}
 .ft-desc{margin:10px 0 14px;color:var(--fx-mu)}
@@ -1626,8 +1627,8 @@ const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boar
 /* 헤더: 로그인했을 때만 LOGOUT 버튼을 보여줘요 */
 function drawMy(){ const b=$('#myBtn'); if(b) b.style.display='none'; } /* 로그아웃은 문의 탭 푸터로 옮겼어요 */
 function vContact(){
-  return `<div class="contact"><span class="fx-pl s">CONTACT</span>
-  <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
+  return `<div class="contact">
+  <p class="fx-ct1 fx-ct2 ct-first">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
   <div class="fx-mailf">${ENVELOPE}
   <div class="c-mail">${CONTACT_EMAIL}</div>
   <button class="fx-pl s pk" onclick="copyEmail()">복사하기</button></div></div>
