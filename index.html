@@ -701,7 +701,9 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 .ix-pin:not(.on) .hg{opacity:.35}
 .ix-row .ix-pin.on .hg{color:var(--pk)}
 .ix-row .ix-pin.on .hg path{fill:var(--pk)}
-.ix-empty{border:0;color:var(--fx-mu);margin-top:6px;padding:20px 0}
+.ix-empty{border:0;color:var(--fx-fg);font-size:12.5px;font-weight:300;line-height:1.55;letter-spacing:-.01em;word-break:keep-all;margin-top:0;padding:0 0 18px}
+/* 빈 인덱스: 폴더·문구·로그인 버튼을 화면 가운데로 */
+.ix-emptywrap{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
 .fx-bigf{width:64px;height:50px;display:block;margin:0 auto 12px}
 .acct{margin:30px 4px 10px;padding:0;border:0;color:var(--fx-fg)}
 .acct p{color:var(--fx-fg);font-size:12.5px;font-weight:300;line-height:1.6;letter-spacing:-.01em}
@@ -1159,7 +1161,7 @@ function vBookmarks(){
   const list=ixOrder().map(byId).filter(Boolean);
   const head=`<p class="fx-ixh">순서는 핀으로 상단에 고정하거나, 꾹 눌러 바꿀 수도 있어요.<br>브랜드 사이트로 이동은 <span class="fx-ico">${EXT}</span> 아이콘을 누르면 돼요.</p>`;
   /* 비어 있을 땐 안내 문구·계정 안내 없이 빈 폴더만 */
-  if(!list.length) return `<div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'')+footer(true);
+  if(!list.length) return `<div class="ix-emptywrap"><div class="ix-empty">${FOLD_EMPTY}마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'')+'</div>'+footer(true);
   return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox()+footer(true);
 }
 /* 목록만 다시 그리면서 자리 이동은 부드럽게 (FLIP) */
@@ -1687,7 +1689,7 @@ function footer(acct){
   if(acct&&AUTH.user) links.push(`<button onclick="signOut()">로그아웃</button>`,`<button onclick="deleteAccount()">회원 탈퇴</button>`);
   return `<div class="ft-gap"></div><footer class="fx-foot">
     <span class="fx-pl s">POCKET INDEX</span>
-    <p class="ft-desc">좋아하는 브랜드를 폴더처럼 모아두는 작은 인덱스</p>
+    <p class="ft-desc">좋아하는 브랜드를 모아두는 작은 인덱스</p>
     <dl class="ft-info"><dt>문의</dt><dd>${CONTACT_EMAIL}</dd><dt>운영</dt><dd>POCKET INDEX 운영팀</dd></dl>
     <div class="ft-links">${links.join('<span aria-hidden="true">·</span>')}</div>
     <p class="ft-copy">© 2026 POCKET INDEX</p>
@@ -1860,14 +1862,14 @@ function clearLocalList(){ STATE.bm=[]; STATE.pins=[]; STATE.subs={}; STATE.no={
 /* 회원 탈퇴: DB 함수 delete_my_account()가 계정을 지우면 user_state(하트)도 함께 지워져요 */
 async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   if(!confirm('탈퇴하면 계정과 계정에 저장된 하트가 모두 지워지고, 되돌릴 수 없어요.\n정말 탈퇴할까요?')) return;
-  clearTimeout(SYNC_T);
+  clearTimeout(SYNC_T); SYNC_READY=false;
   const {error}=await AUTH.sb.rpc('delete_my_account');
   if(error){ toast('탈퇴하지 못했어요. 잠시 후 다시 시도해 주세요'); return; }
   ga('account_delete');
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
   clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
 }
-function signOut(){ if(!AUTH.sb) return; ga('logout'); try{ gtag('set',{user_id:null}); }catch(e){} AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
+async function signOut(){ if(!AUTH.sb) return; ga('logout'); await flushSync(); SYNC_READY=false; try{ gtag('set',{user_id:null}); }catch(e){} AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
 function mergeIn(remote){
   const r=remote||{}, rb=(r.bm||[]), rp=(r.pins||[]);
@@ -1875,15 +1877,24 @@ function mergeIn(remote){
   STATE.pins=[...rp, ...(STATE.pins||[]).filter(id=>!rp.includes(id))];
   STATE.subs=Object.assign({},r.subs||{},STATE.subs||{});
 }
-var SYNC_T=null, SYNC_OFF=false;
-function syncUp(){ if(!AUTH||SYNC_OFF||!AUTH.user||!AUTH.sb) return; clearTimeout(SYNC_T);
-  SYNC_T=setTimeout(()=>{ AUTH.sb.from('user_state').upsert({user_id:AUTH.user.id,state:{bm:STATE.bm,pins:STATE.pins||[],subs:STATE.subs||{}},updated_at:new Date().toISOString()}); },600); }
+/* 계정 저장. SYNC_READY: 서버 목록을 먼저 받아 합친 뒤에만 저장해요(빈 목록으로 덮어쓰기 방지) */
+var SYNC_T=null, SYNC_OFF=false, SYNC_READY=false;
+function syncUp(){ if(!AUTH||SYNC_OFF||!SYNC_READY||!AUTH.user||!AUTH.sb) return; clearTimeout(SYNC_T);
+  const uid=AUTH.user.id;
+  SYNC_T=setTimeout(()=>{ if(!AUTH.user||AUTH.user.id!==uid) return;
+    /* supabase 요청은 then/await 해야 실제로 전송돼요 */
+    AUTH.sb.from('user_state').upsert({user_id:uid,state:{bm:STATE.bm,pins:STATE.pins||[],subs:STATE.subs||{}},updated_at:new Date().toISOString()})
+      .then(({error})=>{ if(error){ console.warn('sync',error); ga('sync_fail',{reason:String(error.code||error.message).slice(0,40)}); } });
+  },600); }
+/* 로그아웃 직전에 남은 저장을 바로 보내요 */
+async function flushSync(){ if(!SYNC_T||!SYNC_READY||!AUTH.user||!AUTH.sb) return; clearTimeout(SYNC_T); SYNC_T=null;
+  try{ await AUTH.sb.from('user_state').upsert({user_id:AUTH.user.id,state:{bm:STATE.bm,pins:STATE.pins||[],subs:STATE.subs||{}},updated_at:new Date().toISOString()}); }catch(e){} }
 async function onSignedIn(user){
   try{ gtag('set',{user_id:user.id}); }catch(e){}
-  AUTH.user=user;
-  const {data}=await AUTH.sb.from('user_state').select('state').eq('user_id',user.id).maybeSingle();
-  const rb=((data&&data.state&&data.state.bm)||[]), moved=STATE.bm.filter(id=>!rb.includes(id)).length;
-  SYNC_OFF=true; mergeIn(data&&data.state); save(); SYNC_OFF=false; syncUp(); render(); drawFav();
+  SYNC_READY=false; AUTH.user=user;
+  const {data,error}=await AUTH.sb.from('user_state').select('state').eq('user_id',user.id).maybeSingle();
+  if(error){ console.warn('load',error); ga('sync_fail',{reason:'load '+String(error.code||error.message).slice(0,34)}); render(); drawFav(); return; } /* 못 불러오면 저장도 하지 않아요 */
+  SYNC_OFF=true; mergeIn(data&&data.state); save(); SYNC_OFF=false; SYNC_READY=true; syncUp(); render(); drawFav();
 }
 function initAuth(){
   /* 미리보기: 실서비스 도메인이 아닌 곳(아티팩트 등)에서는 연결 전이어도 화면만 보여줘요. 버튼은 동작하지 않아요 */
@@ -1895,7 +1906,7 @@ function initAuth(){
       await finishKakao();
       const {data}=await AUTH.sb.auth.getSession();
       if(data&&data.session) await onSignedIn(data.session.user); else render();
-      AUTH.sb.auth.onAuthStateChange((ev,ses)=>{ if(ev==='SIGNED_IN'&&ses&&(!AUTH.user||AUTH.user.id!==ses.user.id)) onSignedIn(ses.user); if(ev==='SIGNED_OUT'&&AUTH.user){ AUTH.user=null; clearLocalList(); render(); } });
+      AUTH.sb.auth.onAuthStateChange((ev,ses)=>{ if(ev==='SIGNED_IN'&&ses&&(!AUTH.user||AUTH.user.id!==ses.user.id)) onSignedIn(ses.user); if(ev==='SIGNED_OUT'&&AUTH.user){ SYNC_READY=false; AUTH.user=null; clearLocalList(); render(); } });
     }catch(e){} };
   document.head.appendChild(sc);
 }
