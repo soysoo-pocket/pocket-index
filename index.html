@@ -600,6 +600,7 @@ html.p1 .vname{max-width:46vw}
 .vstrip{display:flex;align-items:center;justify-content:center;gap:4px;height:28px;flex:0 0 28px;background:var(--f1);color:var(--fx-fg);font:400 11.5px/1 Inter,"Noto Sans KR",sans-serif;letter-spacing:-.01em;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .vstrip[hidden]{display:none}
 .vstrip .hg{width:13px;height:13px}
+.vstrip .vs-emo{font-size:13px;line-height:1;margin-right:1px}
 .vstrip:active{background:var(--f2)}
 .vact .va-heart.hint .hg{animation:hintBeat 1.2s cubic-bezier(.45,0,.55,1) 1}
 @keyframes hintBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
@@ -1542,7 +1543,7 @@ function viewerBack(){ const h=VIEW.hist||[]; if(h.length){ openViewer(h.pop(),t
 function closeViewer(){ VIEW.hist=[]; endVisit(); VIEW.id=null; VIEW.edit=false; $('#viewer').classList.remove('show'); document.body.style.overflow=''; if(TAB!=='discover') render(); }
 function drawRail(){
   if(!PHASE2){ const id=VIEW.id, m=byId(id), on=STATE.bm.includes(id);
-    const st=$('#vstrip'); if(st){ if(m.url){ st.href=m.url; st.innerHTML=`<span>구매는 브랜드 사이트에서 할 수 있어요</span>${EXT}`; st.hidden=false; } else st.hidden=true; }
+    const st=$('#vstrip'); if(st){ if(m.url){ st.href=m.url; st.innerHTML=`<span class="vs-emo" aria-hidden="true">🛍️</span><span>구매는 브랜드 공식몰에서 가능해요</span>${EXT}`; st.hidden=false; } else st.hidden=true; }
     $('#vact').innerHTML=`<button class="vic va-heart ${on?'on':''}" id="hangBtn" onclick="toggleBm('${id}')" aria-label="${on?'저장 해제':'저장'}">${on?HEART_ON:HANGER}</button>
       ${m.url?`<a class="vic" href="${esc(m.url)}" target="_blank" rel="noopener" aria-label="새 창으로 열기">${EXT}</a>`:`<span class="vic off" aria-hidden="true">${EXT}</span>`}
       <a class="vic" href="${igUrl(m)}" target="_blank" rel="noopener" aria-label="인스타그램">${IG}</a>`;
