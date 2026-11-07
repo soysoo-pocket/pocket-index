@@ -594,16 +594,11 @@ html.p1 .vname{max-width:46vw}
 .vact .vic:active .hg{transform:scale(.82);transition:transform .07s ease-out}
 .vact .vic.off{opacity:.3}
 .vact .va-heart.pop .hg{animation:hop .85s cubic-bezier(.3,.7,.3,1)}
-/* 하트 위치 안내(처음 3번만): 하트가 두 번 두근거리고 말풍선이 잠깐 떠요 */
+/* 하트 위치 안내(처음 3번만): 검은 하트가 한 번 커졌다 작아져요 */
 .vact .va-heart{position:relative}
-.vact .va-heart.hint .hg{animation:hintBeat 1s ease-in-out 3;color:var(--pk)}
-.vact .va-heart.hint::after{content:'';position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:1.5px solid var(--pk);opacity:0;animation:hintRing 1s ease-out 3;pointer-events:none}
-@keyframes hintBeat{0%,100%{transform:scale(1)}15%{transform:scale(1.28)}30%{transform:scale(.95)}45%{transform:scale(1.15)}60%{transform:scale(1)}}
-@keyframes hintRing{0%{transform:scale(.6);opacity:.8}100%{transform:scale(1.6);opacity:0}}
-.hint-tip{position:absolute;top:calc(100% + 8px);right:-6px;white-space:nowrap;background:var(--pk);color:#fff;font:400 12px/1 Inter,"Noto Sans KR",sans-serif;padding:8px 11px;border-radius:11px;opacity:0;transform:translateY(-4px);transition:opacity .25s ease,transform .3s cubic-bezier(.3,1.4,.5,1);pointer-events:none;z-index:5}
-.hint-tip::before{content:'';position:absolute;top:-4px;right:18px;width:9px;height:9px;background:var(--pk);transform:rotate(45deg);border-radius:2px}
-.hint-tip.show{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.vact .va-heart.hint .hg,.vact .va-heart.hint::after{animation:none}}
+.vact .va-heart.hint .hg{animation:hintBeat .7s ease-in-out 1}
+@keyframes hintBeat{0%,100%{transform:scale(1)}45%{transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.vact .va-heart.hint .hg{animation:none}}
 html.p1 .site{background:transparent;position:relative}
 .bp-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 .bp{padding:18px 18px 40px}
@@ -1501,9 +1496,7 @@ function heartHint(id){
   if(PHASE2||STATE.bm.length||(STATE.hintN||0)>=3) return;
   STATE.hintN=(STATE.hintN||0)+1; save();
   setTimeout(()=>{ const b=$('#hangBtn'); if(!b||VIEW.id!==id||STATE.bm.includes(id)) return;
-    b.classList.add('hint'); const t=document.createElement('span'); t.className='hint-tip'; t.textContent='마음에 들면 하트로 쏙 담아보세요'; b.appendChild(t);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
-    setTimeout(()=>{ t.classList.remove('show'); b.classList.remove('hint'); setTimeout(()=>t.remove(),350); },3200);
+    b.classList.add('hint'); setTimeout(()=>b.classList.remove('hint'),800);
   },650);
 }
 function openViewer(id,fromBack){
