@@ -720,12 +720,17 @@ html.p1 .site{background:#fff}
 /* 체크 토스트 */
 .fx-ck{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));width:42px;height:42px;margin-left:-21px;border-radius:50%;background:rgba(27,27,27,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:60;pointer-events:none;opacity:0;transform:translateY(6px) scale(.9);transition:opacity .22s ease,transform .4s cubic-bezier(.3,1.4,.5,1)}
 .fx-ck.show{opacity:1;transform:none}
+/* 복사 완료: 검은 동그라미 대신 비눗방울이 둥실 떠올라요 */
+.fx-ck{background:var(--f1);-webkit-backdrop-filter:none;backdrop-filter:none;width:54px;height:54px;margin-left:-27px;bottom:calc(118px + env(safe-area-inset-bottom));box-shadow:0 6px 18px -6px rgba(224,85,155,.45)}
+.fx-bub{font-size:30px;line-height:1;display:block}
+.fx-ck.show .fx-bub{animation:bubUp 1.5s cubic-bezier(.3,.8,.4,1) forwards}
+@keyframes bubUp{0%{transform:translateY(10px) scale(.5)}30%{transform:translateY(-2px) scale(1.12)}50%{transform:translateY(0) scale(1)}75%{transform:translateY(-3px) scale(1.04)}100%{transform:translateY(0) scale(1)}}
 .fx-ck svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .fx-ck svg path{stroke-dasharray:18;stroke-dashoffset:18}
 .fx-ck.show svg path{animation:ckdraw .38s .1s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes ckdraw{to{stroke-dashoffset:0}}
 .fx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (prefers-reduced-motion:reduce){.fx-ck,.fx-ck.show svg path{transition:none;animation:none;stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.fx-ck,.fx-ck.show .fx-bub,.fx-ck.show svg path{transition:none;animation:none;stroke-dashoffset:0}}
 
 /* 공유 시트 */
 .sheet.fx-sheet{background:#fff;color:var(--fx-fg);border-radius:16px 16px 0 0;padding:10px 18px calc(26px + env(safe-area-inset-bottom))}
@@ -1621,10 +1626,10 @@ const SITE_URL='https://pocket-index.com/';
 function checkToast(label){
   let el=$('#ck');
   if(!el){ el=document.createElement('div'); el.id='ck'; el.className='fx-ck'; el.setAttribute('role','status'); el.setAttribute('aria-live','polite');
-    el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 12.4l3.6 3.6 7.4-7.6"/></svg><span class="fx-sr"></span>'; document.body.appendChild(el); }
+    el.innerHTML='<span class="fx-bub" aria-hidden="true">🫧</span><span class="fx-sr"></span>'; document.body.appendChild(el); }
   el.querySelector('.fx-sr').textContent=label||'완료';
   el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
-  clearTimeout(checkToast.t); checkToast.t=setTimeout(()=>el.classList.remove('show'),1300);
+  clearTimeout(checkToast.t); checkToast.t=setTimeout(()=>el.classList.remove('show'),1500);
 }
 function copyText(text,msg){
   const done=()=>checkToast(msg);
