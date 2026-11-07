@@ -596,12 +596,11 @@ html.p1 .vname{max-width:46vw}
 .vact .va-heart.pop .hg{animation:hop .85s cubic-bezier(.3,.7,.3,1)}
 /* 하트 위치 안내(처음 3번만): 검은 하트가 한 번 커졌다 작아져요 */
 .vact .va-heart{position:relative}
-/* 상단 바 아래 얇은 핑크 띠: 구매는 브랜드 사이트에서 */
-.vstrip{display:flex;align-items:center;justify-content:center;gap:4px;height:28px;flex:0 0 28px;background:var(--f1);color:var(--fx-fg);font:400 11.5px/1 Inter,"Noto Sans KR",sans-serif;letter-spacing:-.01em;text-decoration:none;-webkit-tap-highlight-color:transparent}
+/* 상단 바 아래 얇은 핑크 띠: 안내만 해요(눌러도 반응 없음). 이동은 위쪽 ↗ 아이콘으로 */
+.vstrip{display:flex;align-items:center;justify-content:center;gap:3px;pointer-events:none;user-select:none;-webkit-user-select:none;height:28px;flex:0 0 28px;background:var(--f1);color:var(--fx-fg);font:400 11.5px/1 Inter,"Noto Sans KR",sans-serif;letter-spacing:-.01em;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .vstrip[hidden]{display:none}
 .vstrip .hg{width:13px;height:13px}
 .vstrip .vs-emo{font-size:13px;line-height:1;margin-right:1px}
-.vstrip:active{background:var(--f2)}
 .vact .va-heart.hint .hg{animation:hintBeat 1.2s cubic-bezier(.45,0,.55,1) 1}
 @keyframes hintBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 @media (prefers-reduced-motion:reduce){.vact .va-heart.hint .hg{animation:none}}
@@ -803,7 +802,7 @@ html.p1 .site{background:#fff}
 <nav id="nav"></nav>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
-<div class="viewer" id="viewer"><div class="vwrap"><div class="vtop"><div class="vnav"><button class="vic" onclick="viewerBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="vic" onclick="goHome()" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5.2v-5.6H9.2V20H4z"/></svg></button></div><div class="vname" id="urlbar"></div><div class="vact" id="vact"></div></div><a class="vstrip" id="vstrip" target="_blank" rel="noopener" hidden></a><div class="vbody"><div class="site" id="site"></div><aside class="rail" id="rail"></aside></div><div class="fx-vfoot" id="vfoot"></div></div></div>
+<div class="viewer" id="viewer"><div class="vwrap"><div class="vtop"><div class="vnav"><button class="vic" onclick="viewerBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="vic" onclick="goHome()" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5.2v-5.6H9.2V20H4z"/></svg></button></div><div class="vname" id="urlbar"></div><div class="vact" id="vact"></div></div><div class="vstrip" id="vstrip" hidden></div><div class="vbody"><div class="site" id="site"></div><aside class="rail" id="rail"></aside></div><div class="fx-vfoot" id="vfoot"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1543,7 +1542,7 @@ function viewerBack(){ const h=VIEW.hist||[]; if(h.length){ openViewer(h.pop(),t
 function closeViewer(){ VIEW.hist=[]; endVisit(); VIEW.id=null; VIEW.edit=false; $('#viewer').classList.remove('show'); document.body.style.overflow=''; if(TAB!=='discover') render(); }
 function drawRail(){
   if(!PHASE2){ const id=VIEW.id, m=byId(id), on=STATE.bm.includes(id);
-    const st=$('#vstrip'); if(st){ if(m.url){ st.href=m.url; st.innerHTML=`<span class="vs-emo" aria-hidden="true">🛍️</span><span>구매는 브랜드 공식몰에서 가능해요</span>${EXT}`; st.hidden=false; } else st.hidden=true; }
+    const st=$('#vstrip'); if(st){ if(m.url){ st.innerHTML=`<span class="vs-emo" aria-hidden="true">🛍️</span><span>구매는 브랜드 사이트로 이동</span>${EXT}<span>해야해요</span>`; st.hidden=false; } else st.hidden=true; }
     $('#vact').innerHTML=`<button class="vic va-heart ${on?'on':''}" id="hangBtn" onclick="toggleBm('${id}')" aria-label="${on?'저장 해제':'저장'}">${on?HEART_ON:HANGER}</button>
       ${m.url?`<a class="vic" href="${esc(m.url)}" target="_blank" rel="noopener" aria-label="새 창으로 열기">${EXT}</a>`:`<span class="vic off" aria-hidden="true">${EXT}</span>`}
       <a class="vic" href="${igUrl(m)}" target="_blank" rel="noopener" aria-label="인스타그램">${IG}</a>`;
