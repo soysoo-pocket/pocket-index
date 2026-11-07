@@ -691,6 +691,19 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 #myBtn{font-size:12px;padding:2px 10px}
 #myBtn.on{background:var(--fx-fg);color:#fff}
 .ix-login{margin:4px 0 0}
+html.p1 main#view:has(.fx-foot){display:flex;flex-direction:column}
+.ft-gap{flex:0 0 44px}
+.fx-foot{margin:auto -10px calc(-84px - env(safe-area-inset-bottom));padding:26px 18px calc(104px + env(safe-area-inset-bottom));background:#f4f4f2;color:var(--fx-mu);font-size:11.5px;line-height:1.6}
+.fx-foot .fx-pl{color:var(--fx-mu);border-color:var(--fx-mu)}
+.ft-desc{margin:10px 0 14px;color:var(--fx-mu)}
+.ft-info{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0 0 16px}
+.ft-info dt{color:#7a7a7a}
+.ft-info dd{margin:0}
+.ft-links{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 14px}
+.ft-links a,.ft-links button{color:#5f5f5f;font:inherit;font-size:11.5px;background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:none}
+.ft-links a{font-weight:600}
+.ft-links span{color:#c4c4c4}
+.ft-copy{color:#b3b3b3;font-size:10.5px}
 .pp-row{display:flex;justify-content:center;gap:14px;margin:22px 0 4px}
 .pp-row .pp-link{margin:0;font:inherit;font-size:11px;background:none;border:0;padding:0;cursor:pointer}
 .acct.on button{color:var(--fx-fg)}
@@ -1119,8 +1132,8 @@ function vBookmarks(){
   const list=ixOrder().map(byId).filter(Boolean);
   const head=`<p class="fx-ixh">순서는 핀으로 상단에 고정하거나, 꾹 눌러 바꿀 수도 있어요.<br>브랜드 사이트로 이동은 <span class="fx-ico">${EXT}</span> 아이콘을 누르면 돼요.</p>`;
   /* 비어 있을 땐 안내 문구·계정 안내 없이 빈 폴더만 */
-  if(!list.length) return `<div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'');
-  return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox();
+  if(!list.length) return `<div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'')+footer(true);
+  return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox()+footer(true);
 }
 /* 목록만 다시 그리면서 자리 이동은 부드럽게 (FLIP) */
 function ixRedraw(){
@@ -1611,7 +1624,7 @@ const CONTACT_EMAIL='team@pocket-index.com';
 const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
 /* ---------- MY: 로그인 / 계정 ---------- */
 /* 헤더: 로그인했을 때만 LOGOUT 버튼을 보여줘요 */
-function drawMy(){ const b=$('#myBtn'); if(b) b.style.display=AUTH.user?'':'none'; }
+function drawMy(){ const b=$('#myBtn'); if(b) b.style.display='none'; } /* 로그아웃은 문의 탭 푸터로 옮겼어요 */
 function vContact(){
   return `<div class="contact"><span class="fx-pl s">CONTACT</span>
   <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
@@ -1619,7 +1632,19 @@ function vContact(){
   <div class="c-mail">${CONTACT_EMAIL}</div>
   <button class="fx-pl s pk" onclick="copyEmail()">복사하기</button></div></div>
   <div class="share"><button class="s-btn" onclick="shareSite()">POCKET INDEX 친구에게 공유하기</button></div>
-  <div class="pp-row"><a class="pp-link" href="privacy.html">개인정보처리방침</a>${AUTH.user?'<button class="pp-link" onclick="deleteAccount()">회원 탈퇴</button>':''}</div>`;
+  ${footer(false)}`;
+}
+/* 푸터: 인덱스·문의 탭 맨 아래 회색 영역. 계정(로그아웃·탈퇴)은 인덱스 탭에만 */
+function footer(acct){
+  const links=[`<a href="privacy.html">개인정보처리방침</a>`];
+  if(acct&&AUTH.user) links.push(`<button onclick="signOut()">로그아웃</button>`,`<button onclick="deleteAccount()">회원 탈퇴</button>`);
+  return `<div class="ft-gap"></div><footer class="fx-foot">
+    <span class="fx-pl s">POCKET INDEX</span>
+    <p class="ft-desc">좋아하는 브랜드를 폴더처럼 모아두는 작은 인덱스</p>
+    <dl class="ft-info"><dt>문의</dt><dd>${CONTACT_EMAIL}</dd><dt>운영</dt><dd>POCKET INDEX 운영팀</dd></dl>
+    <div class="ft-links">${links.join('<span aria-hidden="true">·</span>')}</div>
+    <p class="ft-copy">© 2026 POCKET INDEX</p>
+  </footer>`;
 }
 const SITE_URL='https://pocket-index.com/';
 /* 복사·공유 완료: 글자 없이 체크 하나만 (읽기 프로그램용 문구는 숨겨서 전달) */
