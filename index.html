@@ -689,7 +689,6 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 .my-sub{font-size:12px;color:var(--fx-mu);margin:0 0 20px}
 .my-stat{display:flex;align-items:center;gap:8px;font-size:13px;margin:0 0 24px}
 #myBtn{font-size:12px;padding:2px 10px}
-html.p1 #myBtn{display:inline-flex}
 #myBtn.on{background:var(--fx-fg);color:#fff}
 .ix-login{margin:4px 0 0}
 .pp-row{display:flex;justify-content:center;gap:14px;margin:22px 0 4px}
@@ -752,7 +751,7 @@ html.p1 .site{background:#fff}
 <div id="app">
   <header>
     <div class="fx-hl"><button class="fx-pl" onclick="goHome()">POCKET INDEX</button></div>
-    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();toTop()">0</button><button class="fx-pl" id="myBtn" onclick="navTo('my')">LOGIN</button></div>
+    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();toTop()">0</button><button class="fx-pl" id="myBtn" onclick="signOut()" style="display:none">LOGOUT</button></div>
   </header>
   <main id="view"></main>
 </div>
@@ -1606,17 +1605,8 @@ const MAIL='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor
 const CONTACT_EMAIL='team@pocket-index.com';
 const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
 /* ---------- MY: 로그인 / 계정 ---------- */
-function drawMy(){ const b=$('#myBtn'); if(!b) return; b.style.display=AUTH.ready&&!AUTH.preview?'':'none'; b.textContent=AUTH.user?'MY':'LOGIN'; b.classList.toggle('on',TAB==='my'); }
-function vMy(){
-  const n=STATE.bm.length;
-  if(!AUTH.user) return `<div class="my"><span class="fx-pl s">LOGIN</span>${acctBox()}</div>`;
-  const mail=AUTH.user.email||'카카오 계정';
-  return `<div class="my"><span class="fx-pl s">MY</span>
-  <p class="my-mail">${esc(mail)}</p><p class="my-sub">카카오로 로그인했어요</p>
-  <p class="my-stat">담은 폴더 <span class="fx-pl s pk">${n}</span></p>
-  <button class="fx-pl" onclick="signOut()">로그아웃</button></div>
-  <div class="pp-row"><a class="pp-link" href="privacy.html">개인정보처리방침</a><button class="pp-link" onclick="deleteAccount()">회원 탈퇴</button></div>`;
-}
+/* 헤더: 로그인했을 때만 LOGOUT 버튼을 보여줘요 */
+function drawMy(){ const b=$('#myBtn'); if(b) b.style.display=AUTH.user?'':'none'; }
 function vContact(){
   return `<div class="contact"><span class="fx-pl s">CONTACT</span>
   <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
@@ -1624,7 +1614,7 @@ function vContact(){
   <div class="c-mail">${CONTACT_EMAIL}</div>
   <button class="fx-pl s pk" onclick="copyEmail()">복사하기</button></div></div>
   <div class="share"><button class="s-btn" onclick="shareSite()">POCKET INDEX 친구에게 공유하기</button></div>
-  <div class="pp-row"><a class="pp-link" href="privacy.html">개인정보처리방침</a></div>`;
+  <div class="pp-row"><a class="pp-link" href="privacy.html">개인정보처리방침</a>${AUTH.user?'<button class="pp-link" onclick="deleteAccount()">회원 탈퇴</button>':''}</div>`;
 }
 const SITE_URL='https://pocket-index.com/';
 /* 복사·공유 완료: 글자 없이 체크 하나만 (읽기 프로그램용 문구는 숨겨서 전달) */
@@ -1691,7 +1681,7 @@ function navTo(k){ if(VIEW.id) closeViewer(); closeSheet(); TAB=k; render(); toT
 function swapAnim(el){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }
 let LASTTAB=null;
 function render(){
-  const v={discover:vDiscover,bookmarks:vBookmarks,boards:vBoards,profile:vProfile,contact:vContact,my:vMy}[TAB]();
+  const v={discover:vDiscover,bookmarks:vBookmarks,boards:vBoards,profile:vProfile,contact:vContact}[TAB]();
   $('#view').innerHTML=v;
   if(LASTTAB!==null && LASTTAB!==TAB) swapAnim($('#view')); LASTTAB=TAB;
   if(TAB==='discover') mountFeed();
