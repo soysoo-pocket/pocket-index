@@ -1506,7 +1506,9 @@ function heartHint(id){
 }
 function openViewer(id,fromBack){
   const m=byId(id); if(!m) return;
-  if(!fromBack) ga('brand_open',{brand:m.name});
+  if(!fromBack){ ga('brand_open',{brand:m.name});
+    /* GA '페이지 및 화면' 보고서에서 브랜드별 조회수로 보이도록 가상 페이지 조회도 보내요 */
+    try{ gtag('event','page_view',Object.assign(gaCtx(),{brand:m.name,page_title:m.name+' · POCKET INDEX',page_location:location.origin+'/brand/'+encodeURIComponent(String(id).replace(/^b:/,''))})); }catch(e){} }
   if(VIEW.id){ endVisit(); if(!fromBack && VIEW.id!==id) (VIEW.hist=VIEW.hist||[]).push(VIEW.id); }
   closeSheet();
   VIEW.id=id; VIEW.t0=performance.now();
