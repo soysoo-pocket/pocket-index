@@ -718,10 +718,19 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 .my-mail{font-size:16px;letter-spacing:-.02em;margin:18px 0 4px;word-break:break-all}
 .my-sub{font-size:12px;color:var(--fx-mu);margin:0 0 20px}
 .my-stat{display:flex;align-items:center;gap:8px;font-size:13px;margin:0 0 24px}
-#myBtn{font-size:12px;padding:2px 10px}
-#myBtn.on{background:var(--fx-fg);color:#fff}
+.me-av{width:28px;height:28px;border-radius:50%;overflow:hidden;padding:0;border:1.3px solid #cfcfcf;background:#f2f2f2;color:#c4c4c4;display:inline-flex;align-items:flex-end;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.me-av svg{width:100%;height:100%;display:block}
+.me-av.on{border-color:var(--pk);background:var(--f1);color:#fff}
+.me-av:active{transform:scale(.92)}
+header{overflow:visible}
+.me-pop{position:absolute;top:calc(100% - 4px);right:12px;width:236px;background:#fff;border:1.3px solid var(--fx-fg);border-radius:14px;padding:16px 14px 14px;box-shadow:0 12px 30px -12px rgba(0,0,0,.25);z-index:20;text-align:center}
+.me-pop[hidden]{display:none}
+.me-t{font-size:12.5px;font-weight:300;line-height:1.55;color:var(--fx-fg);margin:0 0 6px}
+.me-mail{font-size:12px;color:var(--fx-mu);margin:0 0 12px;word-break:break-all}
+.me-pop .sso{margin:10px auto 0;max-width:none;height:38px;font-size:12.5px}
+.me-pop .fx-pl{margin-top:2px}
 .ix-login{margin:4px 0 0}
-html.p1 main#view:has(.fx-foot){display:flex;flex-direction:column}
+html.p1 main#view:has(.fx-foot),html.p1 main#view:has(.ix-emptywrap){display:flex;flex-direction:column}
 .ft-gap{flex:0 0 44px}
 .contact .ct-first{margin-top:0 !important}
 .fx-foot{margin:auto -10px calc(-84px - env(safe-area-inset-bottom));padding:26px 18px calc(104px + env(safe-area-inset-bottom));background:#f4f4f2;color:var(--fx-mu);font-size:11.5px;line-height:1.6}
@@ -800,7 +809,7 @@ html.p1 .site{background:#fff}
 <div id="app">
   <header>
     <div class="fx-hl"><button class="fx-pl" onclick="goHome()">POCKET INDEX</button></div>
-    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();toTop()">0</button><button class="fx-pl" id="myBtn" onclick="signOut()" style="display:none">LOGOUT</button></div>
+    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();toTop()">0</button><button class="me-av" id="myBtn" onclick="toggleMe(event)" aria-label="내 계정" style="display:none"></button><div class="me-pop" id="mePop" hidden></div></div>
   </header>
   <main id="view"></main>
 </div>
@@ -1164,8 +1173,8 @@ function vBookmarks(){
   const list=ixOrder().map(byId).filter(Boolean);
   const head=`<p class="fx-ixh">순서는 핀으로 상단에 고정하거나, 꾹 눌러 바꿀 수도 있어요.<br>브랜드 사이트로 이동은 <span class="fx-ico">${EXT}</span> 아이콘을 누르면 돼요.</p>`;
   /* 비어 있을 땐 안내 문구·계정 안내 없이 빈 폴더만 */
-  if(!list.length) return `<div class="ix-emptywrap"><div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'')+'</div>'+footer(true);
-  return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox()+footer(true);
+  if(!list.length) return `<div class="ix-emptywrap"><div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.ready&&!AUTH.preview&&!AUTH.user?`<div class="acct-btns ix-login"><button class="sso" onclick="signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button></div>`:'')+'</div>';
+  return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox();
 }
 /* 목록만 다시 그리면서 자리 이동은 부드럽게 (FLIP) */
 function ixRedraw(){
@@ -1676,7 +1685,17 @@ const CONTACT_EMAIL='team@pocket-index.com';
 const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
 /* ---------- MY: 로그인 / 계정 ---------- */
 /* 헤더: 로그인했을 때만 LOGOUT 버튼을 보여줘요 */
-function drawMy(){ const b=$('#myBtn'); if(b) b.style.display='none'; } /* 로그아웃은 문의 탭 푸터로 옮겼어요 */
+/* 헤더 오른쪽 사용자 동그라미: 로그인하면 핑크, 아니면 회색. 누르면 작은 계정 창 */
+const AVATAR='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="12.6" r="5.4" fill="currentColor"/><path d="M5.6 28.4c1.7-5 5.6-7.9 10.4-7.9s8.7 2.9 10.4 7.9" fill="currentColor"/></svg>';
+function drawMy(){ const b=$('#myBtn'); if(!b) return; const show=AUTH.ready&&!AUTH.preview; b.style.display=show?'':'none';
+  b.innerHTML=AVATAR; b.classList.toggle('on',!!AUTH.user); b.setAttribute('aria-label',AUTH.user?'내 계정 (로그인됨)':'로그인'); if($('#mePop')&&!$('#mePop').hidden) fillMe(); }
+function fillMe(){ const p=$('#mePop'); if(!p) return;
+  p.innerHTML=AUTH.user
+    ?`<p class="me-t">카카오로 로그인했어요</p><p class="me-mail">${esc(AUTH.user.email||'')}</p><button class="fx-pl s" onclick="closeMe();signOut()">로그아웃</button>`
+    :`<p class="me-t">로그인하면 담은 하트를<br>어디서든 다시 볼 수 있어요</p><button class="sso" onclick="closeMe();signIn('kakao')">${KAKAO_SYM}<span>카카오톡으로 로그인하기</span></button>`; }
+function toggleMe(e){ e&&e.stopPropagation(); const p=$('#mePop'); if(!p) return; if(p.hidden){ fillMe(); p.hidden=false; ga('account_menu_open'); } else p.hidden=true; }
+function closeMe(){ const p=$('#mePop'); if(p) p.hidden=true; }
+document.addEventListener('click',e=>{ const p=$('#mePop'); if(p&&!p.hidden&&!p.contains(e.target)&&e.target.id!=='myBtn') p.hidden=true; });
 function vContact(){
   return `<div class="contact">
   <p class="fx-ct1 fx-ct2 ct-first">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
