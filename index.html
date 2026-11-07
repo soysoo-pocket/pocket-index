@@ -22,7 +22,13 @@ if(/(^|\.)pocket-index\.com$/.test(location.hostname)){
   gtag('js',new Date()); gtag('config','G-WL02G46NQ0');
   var g=document.createElement('script'); g.async=true; g.src='https://www.googletagmanager.com/gtag/js?id=G-WL02G46NQ0'; document.head.appendChild(g);
 }
-function ga(name,params){ try{ gtag('event',name,params||{}); }catch(e){} }
+/* 모든 이벤트에 공통으로 붙는 값: 계정(회원번호 또는 guest), 화면 위치, 한국 시각 */
+function gaCtx(){
+  const u=(typeof AUTH!=='undefined'&&AUTH.user)?AUTH.user.id:'';
+  const area=(typeof VIEW!=='undefined'&&VIEW.id)?'brand_detail':({discover:'home',bookmarks:'index',contact:'contact'}[typeof TAB!=='undefined'?TAB:'']||'etc');
+  return {account_id:u||'guest',login_state:u?'member':'guest',page_area:area,event_time:new Date().toLocaleString('sv-SE',{timeZone:'Asia/Seoul'})};
+}
+function ga(name,params){ try{ gtag('event',name,Object.assign(gaCtx(),params||{})); }catch(e){} }
 </script>
 <link rel="icon" href="favicon.ico?v=4" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=4"><link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png?v=4"><link rel="icon" type="image/svg+xml" href="favicon.svg?v=4"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1535,6 +1541,14 @@ function drawRail(){
 const IG='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.9"/><circle cx="16.9" cy="7.1" r=".6" fill="currentColor" stroke="none"/></svg>';
 /* 확인된 공식 계정만 직접 연결, 나머지는 인스타그램 검색으로 */
 const IG_HANDLE={'paloma - wool':'palomawool','NIKE':'nike','BALENCIAGA':'balenciaga','LEMAIRE':'lemaire_official','ISSEY MIYAKE':'isseymiyakeofficial'};
+/* 브랜드 사이트·인스타 이동 기록 */
+document.addEventListener('click',e=>{ const a=e.target.closest&&e.target.closest('a[href]'); if(!a) return;
+  const h=a.href; if(!/^https?:/.test(h)||h.startsWith(location.origin)) return;
+  const ig=/instagram\.com/.test(h); let m=null;
+  try{ m=FEED.map(byId).find(x=>x&&(ig?igUrl(x)===h:(x.url&&h.replace(/\/$/,'')===x.url.replace(/\/$/,'')))); }catch(err){}
+  if(!m&&!ig) return;
+  ga(ig?'instagram_click':'brand_site_click',{brand:m?m.name:'',link_url:h});
+},true);
 function igUrl(m){ const h=(m.ig||'').replace(/^@/,'')||IG_HANDLE[m.name]; return h?`https://www.instagram.com/${h}/`:`https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(m.name)}`; }
 function drawFav(){ const b=$('#favBtn'); if(b) b.innerHTML=HANGER+' '+STATE.bm.length; const c=$('#navCnt'); if(c) c.textContent=STATE.bm.length; }
 function openMall(id){ openViewer(id); }
@@ -1812,7 +1826,8 @@ async function finishKakao(){
     if(!t.id_token) throw new Error('T-'+(t.error_code||t.error||'no-id-token'));
     const {error}=await AUTH.sb.auth.signInWithIdToken({provider:'kakao',token:t.id_token,access_token:t.access_token,nonce:saved.nonce});
     if(error) throw new Error('A-'+(error.code||error.status||'')+' '+(error.message||''));
-    ga('login',{method:'kakao'});
+    const {data:ses}=await AUTH.sb.auth.getSession(); const uid=ses&&ses.session?ses.session.user.id:'';
+    ga('login',{method:'kakao',account_id:uid||'unknown',login_state:'member'});
   }catch(e){ console.warn('kakao login',e); ga('login_fail',{method:'kakao',reason:String(e&&e.message||e).slice(0,40)}); loginFail(String(e&&e.message||e)); render(); }
 }
 /* 로그인 실패 안내: 원인 확인용 짧은 코드를 함께 보여줘요 */
@@ -1831,7 +1846,7 @@ async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
   clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
 }
-function signOut(){ if(!AUTH.sb) return; ga('logout'); AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
+function signOut(){ if(!AUTH.sb) return; ga('logout'); try{ gtag('set',{user_id:null}); }catch(e){} AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
 function mergeIn(remote){
   const r=remote||{}, rb=(r.bm||[]), rp=(r.pins||[]);
@@ -1843,6 +1858,7 @@ var SYNC_T=null, SYNC_OFF=false;
 function syncUp(){ if(!AUTH||SYNC_OFF||!AUTH.user||!AUTH.sb) return; clearTimeout(SYNC_T);
   SYNC_T=setTimeout(()=>{ AUTH.sb.from('user_state').upsert({user_id:AUTH.user.id,state:{bm:STATE.bm,pins:STATE.pins||[],subs:STATE.subs||{}},updated_at:new Date().toISOString()}); },600); }
 async function onSignedIn(user){
+  try{ gtag('set',{user_id:user.id}); }catch(e){}
   AUTH.user=user;
   const {data}=await AUTH.sb.from('user_state').select('state').eq('user_id',user.id).maybeSingle();
   const rb=((data&&data.state&&data.state.bm)||[]), moved=STATE.bm.filter(id=>!rb.includes(id)).length;
