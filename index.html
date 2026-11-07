@@ -1884,7 +1884,7 @@ async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   ga('account_delete_detail',{reason:kakao});
   ga('account_delete');
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
-  clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요 ('+kakao+')'); clearTimeout(toast.t); toast.t=setTimeout(()=>$('#toast').classList.remove('show'),6000);
+  clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
 }
 async function signOut(){ if(!AUTH.sb) return; ga('logout'); await flushSync(); SYNC_READY=false; try{ gtag('set',{user_id:null}); }catch(e){} AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
