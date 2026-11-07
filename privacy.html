@@ -59,10 +59,11 @@ td:first-child,th:first-child{white-space:nowrap}
 </ul>
 
 <h2>4. 처리 위탁과 국외 이전</h2>
-<p>서비스 운영을 위해 아래 업체에 정보 처리를 맡기고 있어요. 회원 계정과 하트 목록은 <b>대한민국(서울)</b> 서버에 저장돼요. 웹사이트 호스팅 업체의 서버는 미국에 있어서, 사이트 접속 기록은 국외에서 처리돼요.</p>
+<p>서비스 운영을 위해 아래 업체에 정보 처리를 맡기고 있어요. 회원 계정과 하트 목록은 <b>대한민국(서울)</b> 서버에 저장돼요. 웹사이트 호스팅과 방문 통계 업체의 서버는 미국에 있어서, 사이트 접속 기록과 방문 통계는 국외에서 처리돼요.</p>
 <table>
 <tr><th>업체</th><th>맡긴 일</th><th>이전 국가·방법</th><th>보관 기간</th></tr>
 <tr><td>Supabase Inc.</td><td>회원 계정·하트 목록 저장, 로그인 처리</td><td>대한민국(서울, AWS 서울 리전) / 로그인·저장할 때 네트워크로 전송</td><td>회원 탈퇴 시까지</td></tr>
+<tr><td>Google LLC</td><td>방문 통계 분석(Google Analytics)</td><td>미국 / 접속할 때 네트워크로 전송</td><td>최대 14개월</td></tr>
 <tr><td>GitHub Inc.</td><td>웹사이트 호스팅(접속 기록 처리)</td><td>미국 / 접속할 때 네트워크로 전송</td><td>해당 업체 정책에 따름</td></tr>
 </table>
 <p>Supabase Inc.는 미국 회사로, 서비스 관리를 위해 저장된 정보에 접근할 수 있어요. 이를 원하지 않으면 로그인하지 않고 이용하거나 회원 탈퇴를 할 수 있어요. 이 경우 계정 저장 기능을 쓸 수 없어요.</p>
@@ -87,7 +88,11 @@ td:first-child,th:first-child{white-space:nowrap}
 </ul>
 
 <h2>8. 쿠키와 브라우저 저장소</h2>
-<p>로그인 상태와 하트 목록을 기억하기 위해 브라우저 저장소(localStorage)를 써요. 광고·추적용 쿠키는 쓰지 않아요. 브라우저 설정에서 사이트 데이터를 지우면 저장된 내용도 지워져요.</p>
+<p>로그인 상태와 하트 목록을 기억하기 위해 브라우저 저장소(localStorage)를 써요. 브라우저 설정에서 사이트 데이터를 지우면 저장된 내용도 지워져요.</p>
+<p>서비스 개선을 위해 <b>Google Analytics</b>로 방문 통계를 익명으로 모아요. 방문한 페이지, 기기·브라우저 종류, 대략적인 지역, 하트·공유·로그인 같은 이용 행동이 쿠키로 집계돼요. 이메일 등 회원 정보는 보내지 않고, 광고 목적으로 쓰지 않아요.</p>
+<ul>
+<li>원하지 않으면 브라우저 설정에서 쿠키를 차단하거나, <a href="https://tools.google.com/dlpage/gaoptout?hl=ko" target="_blank" rel="noopener">Google Analytics 차단 부가기능</a>을 설치할 수 있어요.</li>
+</ul>
 
 <h2>9. 개인정보 보호책임자</h2>
 <p>Pocket Index 운영팀<br>이메일 <a href="mailto:team@pocket-index.com">team@pocket-index.com</a></p>

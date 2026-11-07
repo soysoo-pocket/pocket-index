@@ -15,6 +15,15 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Google Analytics 4: 실서비스 도메인에서만 집계해요. 이메일 등 개인정보는 보내지 않아요 -->
+<script>
+window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments);}
+if(/(^|\.)pocket-index\.com$/.test(location.hostname)){
+  gtag('js',new Date()); gtag('config','G-WL02G46NQ0');
+  var g=document.createElement('script'); g.async=true; g.src='https://www.googletagmanager.com/gtag/js?id=G-WL02G46NQ0'; document.head.appendChild(g);
+}
+function ga(name,params){ try{ gtag('event',name,params||{}); }catch(e){} }
+</script>
 <link rel="icon" href="favicon.ico?v=4" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=4"><link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png?v=4"><link rel="icon" type="image/svg+xml" href="favicon.svg?v=4"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+KR:wght@100;200;300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -886,6 +895,7 @@ function toggleBm(id){
   if(i>=0){STATE.bm.splice(i,1); delete STATE.no[id]; delete STATE.subs[id];} else {STATE.bm.unshift(id); STATE.no[id]=STATE.nextNo++; VIEW.swing=true; try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}
     STATE.subs[id]={sale:true,new:true,code:true,t:Date.now()}; setTimeout(()=>{ STATE.unread=(STATE.unread||0)+1; save(); drawNewsBtn(); },3200);}
   save();
+  { const bm=byId(id); ga(i<0?'heart_add':'heart_remove',{brand:bm?bm.name:id}); }
   if(i<0) signal(id,3,'bookmark');
   drawFav(); if(VIEW.id) drawRail();
   document.querySelectorAll(`.fcard[data-id="${id}"] .fx-st`).forEach(s=>s.classList.toggle('on',STATE.bm.includes(id)));
@@ -1472,6 +1482,7 @@ function siteHTML(m){
 }
 function openViewer(id,fromBack){
   const m=byId(id); if(!m) return;
+  if(!fromBack) ga('brand_open',{brand:m.name});
   if(VIEW.id){ endVisit(); if(!fromBack && VIEW.id!==id) (VIEW.hist=VIEW.hist||[]).push(VIEW.id); }
   closeSheet();
   VIEW.id=id; VIEW.t0=performance.now();
@@ -1679,7 +1690,7 @@ function loadKakao(){
 }
 function nativeShare(){ return navigator.share?navigator.share({title:'POCKET INDEX',url:SITE_URL}).then(()=>true,e=>e&&e.name==='AbortError'):Promise.resolve(false); }
 function shareKakao(){
-  closeSheet();
+  closeSheet(); ga('share',{method:'kakao',content_type:'site'});
   if(!KAKAO_JS_KEY){ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요. 카카오톡에 붙여넣어 보내 주세요'); }); return; }
   /* 카카오 캐시에 남은 옛 미리보기 대신, 지금 og 태그의 썸네일·설명을 직접 넣어 보내요 */
   const og=k=>{ const m=document.querySelector(`meta[property="og:${k}"]`); return m?m.content:''; };
@@ -1688,8 +1699,8 @@ function shareKakao(){
     content:{title:og('title')||'POCKET INDEX',description:og('description'),imageUrl:og('image'),imageWidth:1200,imageHeight:630,link},
     buttons:[{title:'구경하러 가기',link}]})).catch(()=>{ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요'); }); });
 }
-function shareCopy(){ closeSheet(); copyText(SITE_URL,'링크를 복사했어요'); }
-function shareMore(){ closeSheet(); nativeShare(); }
+function shareCopy(){ closeSheet(); ga('share',{method:'link_copy',content_type:'site'}); copyText(SITE_URL,'링크를 복사했어요'); }
+function shareMore(){ closeSheet(); ga('share',{method:'more',content_type:'site'}); nativeShare(); }
 const SH_ICON={
   link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>',
   mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M3.8 6.3 12 13l8.2-6.7"/></svg>',
@@ -1701,13 +1712,14 @@ function shareSite(){
   openSheet(`<p class="fx-sh-t">POCKET INDEX 공유하기</p><div class="fx-sh">
     ${item('kk',KAKAO_SYM,'카카오톡','onclick="shareKakao()"')}
     ${item('',SH_ICON.link,'링크 복사','onclick="shareCopy()"')}
-    ${item('',SH_ICON.mail,'메일',`href="mailto:?subject=POCKET%20INDEX&body=${u}" onclick="closeSheet()"`)}
-    ${item('',SH_ICON.x,'X',`href="https://x.com/intent/post?text=${txt}&url=${u}" target="_blank" rel="noopener" onclick="closeSheet()"`)}
+    ${item('',SH_ICON.mail,'메일',`href="mailto:?subject=POCKET%20INDEX&body=${u}" onclick="closeSheet();ga('share',{method:'mail',content_type:'site'})"`)}
+    ${item('',SH_ICON.x,'X',`href="https://x.com/intent/post?text=${txt}&url=${u}" target="_blank" rel="noopener" onclick="closeSheet();ga('share',{method:'x',content_type:'site'})"`)}
     ${navigator.share?item('',SH_ICON.more,'더보기','onclick="shareMore()"'):''}
   </div>`);
   $('#sheet').classList.add('fx-sheet');
 }
 function copyEmail(){
+  ga('email_copy');
   const done=()=>checkToast('메일 주소를 복사했어요');
   if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(CONTACT_EMAIL).then(done,fallback); else fallback();
   function fallback(){ const t=document.createElement('textarea'); t.value=CONTACT_EMAIL; t.setAttribute('readonly',''); t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('주소를 길게 눌러 복사해 주세요'); } t.remove(); }
@@ -1778,6 +1790,7 @@ const KAKAO_REDIRECT=location.origin+'/';
 function rnd(){ const a=new Uint8Array(16); crypto.getRandomValues(a); return [...a].map(b=>b.toString(16).padStart(2,'0')).join(''); }
 async function sha256hex(t){ const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
 async function signIn(provider){ if(!AUTH.sb) return;
+  ga('login_start',{method:provider});
   if(provider!=='kakao'){ AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); return; }
   const state=rnd(), nonce=rnd();
   try{ localStorage.setItem('pi-kakao',JSON.stringify({state,nonce,tab:TAB})); }catch(e){}
@@ -1799,7 +1812,8 @@ async function finishKakao(){
     if(!t.id_token) throw new Error('T-'+(t.error_code||t.error||'no-id-token'));
     const {error}=await AUTH.sb.auth.signInWithIdToken({provider:'kakao',token:t.id_token,access_token:t.access_token,nonce:saved.nonce});
     if(error) throw new Error('A-'+(error.code||error.status||'')+' '+(error.message||''));
-  }catch(e){ console.warn('kakao login',e); loginFail(String(e&&e.message||e)); render(); }
+    ga('login',{method:'kakao'});
+  }catch(e){ console.warn('kakao login',e); ga('login_fail',{method:'kakao',reason:String(e&&e.message||e).slice(0,40)}); loginFail(String(e&&e.message||e)); render(); }
 }
 /* 로그인 실패 안내: 원인 확인용 짧은 코드를 함께 보여줘요 */
 function loginFail(code){ const el=$('#toast'); toast('로그인하지 못했어요 ('+code.slice(0,60)+')'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),6000);
@@ -1813,10 +1827,11 @@ async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   clearTimeout(SYNC_T);
   const {error}=await AUTH.sb.rpc('delete_my_account');
   if(error){ toast('탈퇴하지 못했어요. 잠시 후 다시 시도해 주세요'); return; }
+  ga('account_delete');
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
   clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
 }
-function signOut(){ if(!AUTH.sb) return; AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
+function signOut(){ if(!AUTH.sb) return; ga('logout'); AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
 function mergeIn(remote){
   const r=remote||{}, rb=(r.bm||[]), rp=(r.pins||[]);
