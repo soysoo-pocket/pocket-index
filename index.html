@@ -17,6 +17,9 @@
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google Analytics 4: 실서비스 도메인에서만 집계해요. 이메일 등 개인정보는 보내지 않아요 -->
 <script>
+/* 카카오 로그인에서 돌아온 주소(?code=…&state=…)는 GA가 기록하기 전에 먼저 떼어 두고, 나중에 finishKakao()가 꺼내 써요 */
+var KAKAO_CB=(function(){ try{ var p=new URLSearchParams(location.search);
+  if(p.has('state')&&(p.has('code')||p.has('error'))){ history.replaceState(null,'',location.pathname+location.hash); return p.toString(); } }catch(e){} return ''; })();
 window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments);}
 if(/(^|\.)pocket-index\.com$/.test(location.hostname)){
   gtag('js',new Date()); gtag('config','G-WL02G46NQ0');
@@ -1834,18 +1837,27 @@ async function signIn(provider){ if(!AUTH.sb) return;
   const q=new URLSearchParams({client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,response_type:'code',scope:'openid,account_email',state,nonce:await sha256hex(nonce)});
   location.href='https://kauth.kakao.com/oauth/authorize?'+q;
 }
+/* 인증 코드 → 토큰 교환은 서버 기능(kakao-token)이 해요. Client Secret은 서버에만 있어요.
+   서버 기능이 아직 없을 때만(배포 전) 예전처럼 브라우저에서 직접 교환해요 */
+async function kakaoToken(code){
+  try{ const r=await AUTH.sb.functions.invoke('kakao-token',{body:{code,redirect_uri:KAKAO_REDIRECT}});
+    if(r.data&&(r.data.id_token||r.data.error)) return r.data;
+    const s=r.error&&r.error.context&&r.error.context.status;
+    if(s&&s!==404){ let b={}; try{ b=await r.error.context.json(); }catch(e){} return Object.assign({error:'fn-'+s},b); }
+  }catch(e){}
+  const r=await fetch('https://kauth.kakao.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
+    body:new URLSearchParams({grant_type:'authorization_code',client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,code})});
+  return r.json();
+}
 /* 카카오에서 돌아왔을 때(?code=…&state=…) 처리 */
 async function finishKakao(){
-  const u=new URL(location.href), code=u.searchParams.get('code'), err=u.searchParams.get('error'), st=u.searchParams.get('state');
+  const p=new URLSearchParams(KAKAO_CB||''), code=p.get('code'), err=p.get('error'), st=p.get('state'); KAKAO_CB='';
   if(!code&&!err) return;
   let saved={}; try{ saved=JSON.parse(localStorage.getItem('pi-kakao')||'{}'); localStorage.removeItem('pi-kakao'); }catch(e){}
-  history.replaceState(null,'',location.pathname);
   if(saved.tab){ TAB=saved.tab; }
   if(err||!saved.state||st!==saved.state){ if(err!=='access_denied') loginFail(err?('K-'+err):(!saved.state?'S0':'S1')); render(); return; }
   try{
-    const r=await fetch('https://kauth.kakao.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
-      body:new URLSearchParams({grant_type:'authorization_code',client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,code})});
-    const t=await r.json();
+    const t=await kakaoToken(code);
     if(!t.id_token) throw new Error('T-'+(t.error_code||t.error||'no-id-token'));
     const {error}=await AUTH.sb.auth.signInWithIdToken({provider:'kakao',token:t.id_token,access_token:t.access_token,nonce:saved.nonce});
     if(error) throw new Error('A-'+(error.code||error.status||'')+' '+(error.message||''));
@@ -1866,12 +1878,13 @@ async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
   /* 서버 기능(delete-account)이 카카오 연결 끊기 + 계정 삭제를 함께 해요. 없으면 계정 삭제만 해요 */
   let error=null, kakao='';
   try{ const r=await AUTH.sb.functions.invoke('delete-account',{method:'POST'}); if(r.error||!r.data||!r.data.ok) throw r.error||new Error('fn'); kakao=r.data.kakao||''; }
-  catch(e){ ({error}=await AUTH.sb.rpc('delete_my_account')); kakao='fallback'; }
+  catch(e){ let why=''; try{ why=e&&e.context&&e.context.status?String(e.context.status):String(e&&e.name||e).slice(0,20); }catch(_){}
+    ({error}=await AUTH.sb.rpc('delete_my_account')); kakao='fallback-'+why; }
   if(error){ toast('탈퇴하지 못했어요. 잠시 후 다시 시도해 주세요'); return; }
   ga('account_delete_detail',{reason:kakao});
   ga('account_delete');
   AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
-  clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
+  clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요 ('+kakao+')'); clearTimeout(toast.t); toast.t=setTimeout(()=>$('#toast').classList.remove('show'),6000);
 }
 async function signOut(){ if(!AUTH.sb) return; ga('logout'); await flushSync(); SYNC_READY=false; try{ gtag('set',{user_id:null}); }catch(e){} AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
@@ -1903,7 +1916,9 @@ async function onSignedIn(user){
 function initAuth(){
   /* 미리보기: 실서비스 도메인이 아닌 곳(아티팩트 등)에서는 연결 전이어도 화면만 보여줘요. 버튼은 동작하지 않아요 */
   if(!SUPABASE_URL||!SUPABASE_ANON_KEY){ if(!/pocket-index\.com$/.test(location.hostname)){ AUTH.ready=true; AUTH.preview=true; } return; }
-  const sc=document.createElement('script'); sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  /* 버전을 고정하고 무결성(SRI)을 확인해요. 버전을 올릴 땐 integrity 값도 같이 바꿔야 해요 */
+  const sc=document.createElement('script'); sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js';
+  sc.integrity='sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O'; sc.crossOrigin='anonymous';
   sc.onload=async()=>{ try{
       AUTH.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{detectSessionInUrl:false}});
       AUTH.ready=true;
