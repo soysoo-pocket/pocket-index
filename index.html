@@ -1680,7 +1680,12 @@ function nativeShare(){ return navigator.share?navigator.share({title:'POCKET IN
 function shareKakao(){
   closeSheet();
   if(!KAKAO_JS_KEY){ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요. 카카오톡에 붙여넣어 보내 주세요'); }); return; }
-  loadKakao().then(K=>K.Share.sendScrap({requestUrl:SITE_URL})).catch(()=>{ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요'); }); });
+  /* 카카오 캐시에 남은 옛 미리보기 대신, 지금 og 태그의 썸네일·설명을 직접 넣어 보내요 */
+  const og=k=>{ const m=document.querySelector(`meta[property="og:${k}"]`); return m?m.content:''; };
+  const link={mobileWebUrl:SITE_URL,webUrl:SITE_URL};
+  loadKakao().then(K=>K.Share.sendDefault({objectType:'feed',
+    content:{title:og('title')||'POCKET INDEX',description:og('description'),imageUrl:og('image'),imageWidth:1200,imageHeight:630,link},
+    buttons:[{title:'구경하러 가기',link}]})).catch(()=>{ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요'); }); });
 }
 function shareCopy(){ closeSheet(); copyText(SITE_URL,'링크를 복사했어요'); }
 function shareMore(){ closeSheet(); nativeShare(); }
