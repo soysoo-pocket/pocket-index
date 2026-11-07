@@ -1721,8 +1721,36 @@ function acctBox(){
       ${SSO_ON.includes('apple')?btn('apple',APPLE_SYM,'Apple로 계속하기'):''}
     </div><a class="acct-pp" href="privacy.html">개인정보처리방침</a></div>`;
 }
-function signIn(provider){ if(!AUTH.sb) return;
-  AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); }
+/* 카카오: 이메일만 요청해요 (openid + account_email).
+   카카오에서 받은 로그인 증표(ID 토큰)를 Supabase에 넘겨 로그인해요. 닉네임·프로필 사진은 요청하지 않아요. */
+const KAKAO_REST_KEY='bba76cbf499bafe58641903677a71c57';
+const KAKAO_REDIRECT=location.origin+'/';
+function rnd(){ const a=new Uint8Array(16); crypto.getRandomValues(a); return [...a].map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function sha256hex(t){ const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function signIn(provider){ if(!AUTH.sb) return;
+  if(provider!=='kakao'){ AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); return; }
+  const state=rnd(), nonce=rnd();
+  try{ sessionStorage.setItem('pi-kakao',JSON.stringify({state,nonce,tab:TAB})); }catch(e){}
+  const q=new URLSearchParams({client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,response_type:'code',scope:'openid,account_email',state,nonce:await sha256hex(nonce)});
+  location.href='https://kauth.kakao.com/oauth/authorize?'+q;
+}
+/* 카카오에서 돌아왔을 때(?code=…&state=…) 처리 */
+async function finishKakao(){
+  const u=new URL(location.href), code=u.searchParams.get('code'), err=u.searchParams.get('error'), st=u.searchParams.get('state');
+  if(!code&&!err) return;
+  let saved={}; try{ saved=JSON.parse(sessionStorage.getItem('pi-kakao')||'{}'); sessionStorage.removeItem('pi-kakao'); }catch(e){}
+  history.replaceState(null,'',location.pathname);
+  if(saved.tab){ TAB=saved.tab; }
+  if(err||!saved.state||st!==saved.state){ if(err!=='access_denied') toast('로그인하지 못했어요. 다시 시도해 주세요'); render(); return; }
+  try{
+    const r=await fetch('https://kauth.kakao.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
+      body:new URLSearchParams({grant_type:'authorization_code',client_id:KAKAO_REST_KEY,redirect_uri:KAKAO_REDIRECT,code})});
+    const t=await r.json();
+    if(!t.id_token) throw new Error(t.error_code||t.error||'no id_token');
+    const {error}=await AUTH.sb.auth.signInWithIdToken({provider:'kakao',token:t.id_token,access_token:t.access_token,nonce:saved.nonce});
+    if(error) throw error;
+  }catch(e){ console.warn('kakao login',e); toast('로그인하지 못했어요. 다시 시도해 주세요'); render(); }
+}
 /* 로그아웃하면 이 브라우저에 남은 목록을 비워요. 계정에 이미 저장돼 있으니 다음 로그인 때 그대로 돌아와요.
    (안 비우면 같은 브라우저에서 다른 사람이 로그인할 때 앞사람 하트가 섞여요) */
 function clearLocalList(){ STATE.bm=[]; STATE.pins=[]; STATE.subs={}; STATE.no={}; STATE.nextNo=1; try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){} }
@@ -1758,8 +1786,9 @@ function initAuth(){
   if(!SUPABASE_URL||!SUPABASE_ANON_KEY){ if(!/pocket-index\.com$/.test(location.hostname)){ AUTH.ready=true; AUTH.preview=true; } return; }
   const sc=document.createElement('script'); sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
   sc.onload=async()=>{ try{
-      AUTH.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      AUTH.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{detectSessionInUrl:false}});
       AUTH.ready=true;
+      await finishKakao();
       const {data}=await AUTH.sb.auth.getSession();
       if(data&&data.session) await onSignedIn(data.session.user); else if(TAB==='bookmarks') render();
       AUTH.sb.auth.onAuthStateChange((ev,ses)=>{ if(ev==='SIGNED_IN'&&ses&&(!AUTH.user||AUTH.user.id!==ses.user.id)) onSignedIn(ses.user); if(ev==='SIGNED_OUT'&&AUTH.user){ AUTH.user=null; clearLocalList(); drawFav(); if(TAB==='bookmarks') render(); } });
