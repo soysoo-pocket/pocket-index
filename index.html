@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+KR:wght@100;200;300;400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#f3f2ee; --paper2:#eae8e2; --ink:#111; --ink2:#55534e; --ink3:#8d8a83; --line:#d6d3cb;
@@ -595,24 +595,159 @@ html.p1 .site{background:transparent;position:relative}
 .sso svg{position:absolute;left:18px;top:50%;transform:translateY(-50%)}
 .sso:active{transform:scale(.98)}
 .acct.on{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;padding:0;font-size:12px;text-align:left}
+.acct-act{display:flex;gap:12px}
+.acct-pp{display:inline-block;margin-top:14px;font-size:11px;color:#fff;opacity:.75;text-decoration:underline;text-underline-offset:3px}
+.pp-link{display:block;text-align:center;margin:22px 0 4px;font-size:11px;color:#fff;opacity:.75;text-decoration:underline;text-underline-offset:3px}
 .acct.on button{color:#fff;font-size:12px;text-decoration:underline;text-underline-offset:3px;opacity:.9}
 .ix-ig .hg{width:19px;height:19px}
 .ix-row .ix-ic{width:36px}
 .ix-name{cursor:grab}
+
+/* ===================== FOLDER SKIN (10-2) ===================== */
+:root{--fx-bg:#fff;--fx-fg:#1b1b1b;--f1:#f8bdd8;--f2:#ef93c0;--pk:#e0559b;--fx-mu:#9a9a9a;--fx-soft:#fdf2f7}
+html,body{background:#fff}
+html.p1 body{background:#fff}
+#app{background:#fff;color:var(--fx-fg)}
+main, main *{font-family:Inter,"Noto Sans KR",sans-serif}
+.fx-pl{display:inline-flex;align-items:center;gap:4px;border:1.3px solid var(--fx-fg);border-radius:999px;padding:2px 10px;font:400 14px/1.25 Inter,"Noto Sans KR",sans-serif;letter-spacing:-.02em;white-space:nowrap;color:var(--fx-fg);background:transparent}
+.fx-pl.s{font-size:12px;padding:1px 8px}
+.fx-pl.pk{border-color:var(--pk);color:var(--pk)}
+.fx-ci{width:28px;height:28px;border:1.3px solid var(--fx-fg);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--fx-fg)}
+.fx-par{font:200 34px/.9 Inter,sans-serif;color:var(--fx-fg)}
+header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:10;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:0;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;align-items:center}
+#app{padding-top:var(--hh,56px)}
+/* 상단은 그대로 두고 그 아래 영역만 스크롤 (페이지 전체는 움직이지 않음) */
+html.p1,html.p1 body{height:100%;overflow:hidden}
+html.p1 #app{height:100vh;height:100dvh;min-height:0;padding:0;display:flex;flex-direction:column}
+html.p1 header{position:relative;top:auto;left:auto;transform:none;-webkit-transform:none;width:100%;max-width:none;flex:0 0 auto}
+html.p1 main#view{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+html.p1 #favBtn{display:none}
+header{will-change:transform;-webkit-transform:translateX(-50%) translateZ(0);transform:translateX(-50%) translateZ(0)}
+.fx-hl{display:flex;align-items:center;gap:6px}
+.hbtn,#favBtn{background:transparent;border:1.3px solid var(--pk);color:var(--pk);font:400 14px Inter,sans-serif;padding:2px 10px;border-radius:999px;display:flex;align-items:center;gap:4px}
+#favBtn .hg{width:13px;height:13px}
+main{padding:0 10px}
+.fx-intro{font-size:12.5px;font-weight:300;line-height:1.55;letter-spacing:-.01em;padding:22px 6px 26px 4px;color:var(--fx-fg);word-break:keep-all}
+.fx-intro em{font-style:normal;color:var(--pk)}
+.fx-sec{display:grid;grid-template-columns:auto 1fr;gap:8px;padding:0 0 26px;align-items:start}
+.fx-grow{display:flex;align-items:flex-start;gap:4px}
+.fx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 2px;flex:1}
+.fx-grid.fx-new{display:flex;flex-wrap:wrap;flex:0 1 auto;gap:16px 2px;min-width:0}
+.fx-new .fx-fd{width:calc((100vw - 120px)/3);max-width:100px}
+#feed{padding-top:0}
+.fcard.fx-fd{background:none;box-shadow:none;transform:none;margin:0;padding:0;border:0;color:var(--fx-fg)}
+.fx-fb{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;text-align:center;font-size:10.5px;line-height:1.25;letter-spacing:-.01em;color:var(--fx-fg)}
+.fx-fdw{position:relative;width:64px;height:52px;display:block}
+.fx-peek{position:absolute;left:13px;top:-7px;width:38px;height:44px;overflow:hidden;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transform:rotate(-5deg);transition:transform .3s cubic-bezier(.3,1.5,.5,1)}
+.fx-peek img{display:block;width:100%;height:100%;object-fit:cover}
+.fx-fb:active .fx-peek{transform:rotate(-1deg) translateY(-9px)}
+@media (hover:hover){.fx-fb:hover .fx-peek{transform:rotate(-1deg) translateY(-9px)}}
+.fx-fdw .fx-fo{position:absolute;left:0;bottom:0;width:64px;height:50px}
+.fx-st{position:absolute;right:-2px;bottom:4px;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--pk);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.15);transform:scale(0);transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+.fx-st.on{transform:scale(1)}
+.fx-st svg{width:12px;height:12px}
+.fx-fn{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.fx-pgn{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 20px;font-size:14px;color:var(--fx-fg)}
+/* nav */
+nav,html.p1 nav{background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:0;display:flex;justify-content:center;align-items:center;gap:6px;padding:12px 0 calc(14px + env(safe-area-inset-bottom))}
+nav .fx-par{font-size:28px}
+nav button.fx-pl{display:inline-flex;flex-direction:row;font-size:13px;padding:3px 12px;color:var(--fx-fg)}
+nav button.fx-pl.on{background:var(--fx-fg);color:#fff;font-weight:400}
+.fx-cnt{display:inline-flex;min-width:17px;height:17px;border-radius:9px;background:var(--pk);color:#fff;font-size:10px;font-weight:700;align-items:center;justify-content:center;padding:0 4px;margin-left:2px}
+nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
+/* index tab */
+.fx-ixh{padding:22px 4px 18px;font-size:12.5px;font-weight:300;line-height:1.6;letter-spacing:-.01em;color:var(--fx-fg)}
+.fx-ico{display:inline-flex;vertical-align:-3px}
+.fx-ico .hg{width:15px;height:15px}
+.fx-ixh small{display:block;font-size:12.5px;color:var(--fx-mu);margin-top:4px}
+.ix-list{margin:0 -10px}
+.ix-row{border-bottom:1px solid #f3f3f3;padding:0 6px 0 12px;gap:2px}
+.ix-row:nth-child(odd){background:var(--fx-soft)}
+.ix-row.pending{border-bottom-color:#f3f3f3}
+.ix-row.lift{background:#fff;box-shadow:0 14px 30px -14px rgba(160,40,90,.4)}
+.fx-rf{flex:0 0 28px;display:flex;cursor:pointer}
+.fx-rf .fx-fo{width:26px;height:21px}
+.ix-name{color:var(--fx-fg);font-size:13.5px;font-weight:400;padding:9px 0 9px 6px;cursor:pointer}
+.ix-name small{display:block;font-size:10px;color:var(--fx-mu);margin-top:1px}
+.ix-ic{color:var(--fx-fg)}
+.ix-row .ix-ic{width:34px}
+.ix-ic .hg{width:18px !important;height:18px !important}
+.ix-pin:not(.on) .hg{opacity:.35}
+.ix-row .ix-pin.on .hg{color:var(--pk)}
+.ix-row .ix-pin.on .hg path{fill:var(--pk)}
+.ix-empty{border:0;color:var(--fx-mu);margin-top:6px;padding:20px 0}
+.fx-bigf{width:110px;height:86px;display:block;margin:0 auto 10px}
+.acct{margin:30px 4px 10px;padding:0;border:0;color:var(--fx-fg)}
+.acct p{color:var(--fx-fg);font-size:12.5px;font-weight:300;line-height:1.6;letter-spacing:-.01em}
+.sso{background:#fff;border:1.3px solid var(--fx-fg);height:40px}
+.acct-pp,.pp-link{color:var(--fx-mu);opacity:1}
+.acct.on{border:0;padding:0;margin:16px 4px 6px}
+.acct.on button{color:var(--fx-fg)}
+/* contact */
+.contact{text-align:left;color:var(--fx-fg);border:0;padding:22px 4px 6px;margin-top:0}
+.fx-ct1,.fx-ct2{font-size:12.5px !important;font-weight:300;line-height:1.6 !important;letter-spacing:-.01em;color:var(--fx-fg) !important;word-break:keep-all}
+.fx-ct1{margin:16px 0 6px !important}
+.fx-ct2{margin:0 0 26px !important}
+.fx-ct1.fx-ct2{margin:16px 0 26px !important}
+.fx-mailf{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0 6px}
+.fx-env{width:66px;height:48px;margin-bottom:4px}
+.contact .c-mail{margin:0;font-size:13px;font-weight:400;letter-spacing:0;color:var(--fx-fg)}
+.share{border:0;padding:10px 0 4px}
+.share .s-btn{background:transparent;border:1.3px solid var(--fx-fg);color:var(--fx-fg);font:400 12px/1.25 Inter,"Noto Sans KR",sans-serif;padding:2px 10px;border-radius:999px}
+/* detail viewer */
+.viewer{background:#fff}
+.vwrap{background:#fff;color:var(--fx-fg)}
+.vtop{background:rgba(255,255,255,.96);border-bottom:0;padding:10px 12px}
+.vic,.vact .vic{color:var(--fx-fg)}
+.vname{font:400 14px Inter,"Noto Sans KR",sans-serif;letter-spacing:-.02em;border:1.3px solid var(--fx-fg);border-radius:999px;padding:2px 12px;justify-self:center;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.p1 .site{background:#fff}
+.bp-img{box-shadow:none;padding:0}
+/* toast */
+.toast{background:var(--pk);color:#fff;font-family:Inter,"Noto Sans KR",sans-serif}
+.toast.pink{background:var(--pk);box-shadow:none}
+
+/* 체크 토스트 */
+.fx-ck{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));width:42px;height:42px;margin-left:-21px;border-radius:50%;background:rgba(27,27,27,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:60;pointer-events:none;opacity:0;transform:translateY(6px) scale(.9);transition:opacity .22s ease,transform .4s cubic-bezier(.3,1.4,.5,1)}
+.fx-ck.show{opacity:1;transform:none}
+.fx-ck svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.fx-ck svg path{stroke-dasharray:18;stroke-dashoffset:18}
+.fx-ck.show svg path{animation:ckdraw .38s .1s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes ckdraw{to{stroke-dashoffset:0}}
+.fx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.fx-ck,.fx-ck.show svg path{transition:none;animation:none;stroke-dashoffset:0}}
+
+/* 공유 시트 */
+.sheet.fx-sheet{background:#fff;color:var(--fx-fg);border-radius:16px 16px 0 0;padding:10px 18px calc(26px + env(safe-area-inset-bottom))}
+.sheet.fx-sheet .grab{background:#e6e6e6}
+.fx-sh-t{font:300 12.5px/1.6 Inter,"Noto Sans KR",sans-serif;letter-spacing:-.01em;margin:2px 0 18px;text-align:center}
+.fx-sh{display:flex;justify-content:center;gap:14px}
+.fx-sh-i{display:flex;flex-direction:column;align-items:center;gap:7px;font:400 11px Inter,"Noto Sans KR",sans-serif;color:var(--fx-fg);text-decoration:none;min-width:52px}
+.fx-sh-c{width:48px;height:48px;border-radius:50%;border:1.3px solid var(--fx-fg);display:flex;align-items:center;justify-content:center;transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.fx-sh-i:active .fx-sh-c{transform:scale(.9)}
+.fx-sh-c svg{width:20px;height:20px}
+.fx-sh-i.kk .fx-sh-c{background:#FEE500;border-color:#FEE500}
+.fx-sh-i.kk .fx-sh-c svg{width:22px;height:22px}
+
+/* 상세 하단 이전/다음 */
+.fx-vfoot{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid #f0f0f0}
+.fx-vfoot .fx-pl{max-width:40%;padding:3px 10px}
+.fx-vfoot .fx-pl b{font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.fx-vfoot .fx-pl span{flex:0 0 auto}
+.fx-vno{font:300 11px Inter,sans-serif;color:var(--fx-mu);letter-spacing:.02em}
 </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <div class="wordmark" role="link" tabindex="0" style="cursor:pointer" onclick="goHome()" onkeydown="if(event.key==='Enter')goHome()">Pocket <i>Index</i><small>작은 브랜드들의 색인</small></div>
-    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();scrollTo(0,0)">0</button></div>
+    <div class="fx-hl"><button class="fx-pl" onclick="goHome()">POCKET INDEX</button></div>
+    <div style="display:flex;gap:8px"><button class="hbtn" id="newsBtn" onclick="openNews()" aria-label="소식"></button><button class="hbtn" id="favBtn" onclick="TAB='bookmarks';render();toTop()">0</button></div>
   </header>
   <main id="view"></main>
 </div>
 <nav id="nav"></nav>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
-<div class="viewer" id="viewer"><div class="vwrap"><div class="vtop"><div class="vnav"><button class="vic" onclick="viewerBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="vic" onclick="goHome()" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5.2v-5.6H9.2V20H4z"/></svg></button></div><div class="vname" id="urlbar"></div><div class="vact" id="vact"></div></div><div class="vbody"><div class="site" id="site"></div><aside class="rail" id="rail"></aside></div></div></div>
+<div class="viewer" id="viewer"><div class="vwrap"><div class="vtop"><div class="vnav"><button class="vic" onclick="viewerBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="vic" onclick="goHome()" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5.2v-5.6H9.2V20H4z"/></svg></button></div><div class="vname" id="urlbar"></div><div class="vact" id="vact"></div></div><div class="vbody"><div class="site" id="site"></div><aside class="rail" id="rail"></aside></div><div class="fx-vfoot" id="vfoot"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -705,7 +840,7 @@ const ago=m=>{const d=Math.round((NOW-m.opened)/DAY); return d<1?'오늘':d<31?d
 /*sign moved*/
 const NO=id=>'№ '+String((STATE.no||{})[id]||0).padStart(3,'0');
 const HANGER='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_ON=HANGER.replace('fill="none"','fill="#E5243F"').replace('stroke="currentColor"','stroke="#E5243F"');
+const HEART_ON=HANGER.replace('fill="none"','fill="#e0559b"').replace('stroke="currentColor"','stroke="#e0559b"');
 const ICON={
  bm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
  bmOn:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
@@ -723,6 +858,7 @@ function toggleBm(id){
   save();
   if(i<0) signal(id,3,'bookmark');
   drawFav(); if(VIEW.id) drawRail();
+  document.querySelectorAll(`.fcard[data-id="${id}"] .fx-st`).forEach(s=>s.classList.toggle('on',STATE.bm.includes(id)));
   if(TAB==='discover'){ document.querySelectorAll(`.fcard[data-id="${id}"] .bm, .rec .bm`).forEach(b=>{const on=STATE.bm.includes(id); b.classList.toggle('on',on); b.innerHTML=on?ICON.bmOn:ICON.bm;}); }
   else render();
   if($('#sheet').classList.contains('show') && openSheet.cur) openSheet.cur();
@@ -866,6 +1002,18 @@ function grayScene(i){
   }
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice">${base}${props}${fig}</svg>`;
 }
+/* ---------- 폴더 스킨 ---------- */
+const FOLD='<svg class="fx-fo" viewBox="0 0 64 50" aria-hidden="true"><path d="M2 7a3 3 0 0 1 3-3h17l4.5 4.5H59a3 3 0 0 1 3 3V15H2z" fill="var(--f2)"/><rect x="2" y="12" width="60" height="36" rx="3.5" fill="var(--f1)"/><rect x="2" y="12" width="60" height="2.2" fill="#fff" opacity=".45"/></svg>';
+const FOLD_EMPTY='<svg class="fx-bigf" viewBox="0 0 110 86" aria-hidden="true"><path d="M4 12a5 5 0 0 1 5-5h30l8 8h54a5 5 0 0 1 5 5v6H4z" fill="var(--f2)"/><rect x="4" y="22" width="102" height="60" rx="6" fill="var(--f1)"/></svg>';
+const ENVELOPE='<svg class="fx-env" viewBox="0 0 110 80" aria-hidden="true"><rect x="4" y="8" width="102" height="66" rx="5" fill="var(--f1)"/><path d="M6 12l49 36 49-36" fill="none" stroke="#fff" stroke-width="3"/><circle cx="92" cy="14" r="11" fill="var(--pk)"/><path d="M92 19.5s-5-3-6-6c-.6-1.9.6-3.9 2.6-3.9 1.4 0 2.4.8 3.4 2 1-1.2 2-2 3.4-2 2 0 3.2 2 2.6 3.9-1 3-6 6-6 6z" fill="#fff"/></svg>';
+const STICK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="currentColor"/></svg>';
+function folderCard(id){
+  const m=byId(id); if(!m) return '';
+  const on=STATE.bm.includes(id);
+  return `<article class="fcard fx-fd" data-id="${id}"><button class="fx-fb" onclick="tapMall('${id}')" aria-label="${esc(m.name)} 열기">
+    <span class="fx-fdw">${m.img?`<span class="fx-peek"><img src="${esc(m.img)}" alt="" loading="lazy" decoding="async"></span>`:''}${FOLD}<span class="fx-st ${on?'on':''}">${STICK}</span></span>
+    <span class="fx-fn">${esc(m.name)}</span></button></article>`;
+}
 function feedCard(id){
   const m=byId(id);
   const img=m.img?`<img src="${esc(m.img)}" alt="" loading="lazy" decoding="async">`:(PHASE2?grayScene(FEED.indexOf(id)):'');
@@ -877,7 +1025,11 @@ function feedCard(id){
   </article>`;
 }
 function vDiscover(){
-  return `<div id="feed"></div>`;
+  if(PHASE2) return `<div id="feed"></div>`;
+  return `<p class="fx-intro">POCKET INDEX에는 매일 새로운 브랜드가 <em>폴더</em>로 도착해요.<br>열어서 룩북을 구경할 수 있는데 마음에 들면 하트로 쏙 담아두세요. 브랜드의 소식도 곧 들려드릴게요.</p>
+  <div id="fxNew"></div>
+  <div class="fx-sec"><span class="fx-pl s">ALL</span><div class="fx-grow"><span class="fx-par">(</span><div id="feed" class="fx-grid"></div></div></div>
+`;
 }
 let COLH=[0,0];
 function placeCards(ids){
@@ -886,7 +1038,8 @@ function placeCards(ids){
 }
 function mountFeed(){
   FEED=(PHASE2?['r1','r3','m0','m1','m3']:BRAND_IDS).filter(byId); SEEN=0;
-  $('#feed').innerHTML=FEED.map(feedCard).join('');
+  $('#feed').innerHTML=FEED.map(PHASE2?feedCard:folderCard).join('');
+  const nw=$('#fxNew'); if(nw){ const ids=FEED.filter(id=>byId(id).isNewB); nw.innerHTML=ids.length?`<div class="fx-sec"><span class="fx-pl s">NEW</span><div class="fx-grow"><span class="fx-par">(</span><div class="fx-grid fx-new">${ids.map(folderCard).join('')}</div><span class="fx-par">)</span></div></div>`:''; }
   observeFeed(); drawTaste();
 }
 const DWELL={};
@@ -939,16 +1092,19 @@ function ixOrder(){ STATE.pins=(STATE.pins||[]).filter(id=>STATE.bm.includes(id)
   return [...P,...STATE.bm.filter(id=>!P.includes(id))]; }
 function ixRow(m){ const on=subLabel(m.id)!=='소식 꺼짐', pend=!!IXP[m.id], pin=(STATE.pins||[]).includes(m.id);
   return `<div class="ix-row ${pend?'pending':''} ${pin?'pinned':''}" data-id="${m.id}">
+    <span class="fx-rf" onclick="openViewer('${m.id}')">${FOLD}</span>
+    <span class="ix-name" onclick="openViewer('${m.id}')">${esc(m.name)}${m.ig?`<small>@${esc(m.ig)}</small>`:''}</span>
     <button class="ix-ic ix-pin ${pin?'on':''}" onclick="ixPin('${m.id}')" aria-label="${pin?'고정 해제':'맨 위에 고정'}">${pin?PIN_ON:PIN}</button>
-    <span class="ix-name">${esc(m.name)}</span>
     <button class="ix-ic ix-heart" onclick="ixUnsave('${m.id}',this)" aria-label="${pend?'다시 저장':'저장 해제'}">${pend?HANGER:HEART_ON}</button>
     <button class="ix-ic ix-env ${on?'on':''}" onclick="newsToggle('${m.id}',this)" aria-label="${on?'소식 끄기':'소식 켜기'}">${on?BELL_ON:BELL}</button>
     ${m.url?`<a class="ix-ic ix-ext" href="${esc(m.url)}" target="_blank" rel="noopener" aria-label="새 창으로 열기">${EXT}</a>`:`<span class="ix-ic ix-ext off" aria-hidden="true">${EXT}</span>`}
     <a class="ix-ic ix-ig" href="${igUrl(m)}" target="_blank" rel="noopener" aria-label="인스타그램">${IG}</a></div>`; }
 function vBookmarks(){
   const list=ixOrder().map(byId).filter(Boolean);
-  return (list.length?`<div class="ix-list">${list.map(ixRow).join('')}</div>`
-  :`<div class="ix-empty">아직 비어 있어요.<br>마음에 드는 브랜드를 하나씩 담아보세요.</div>`)+acctBox();
+  const head=`<p class="fx-ixh">순서는 핀으로 상단에 고정하거나, 꾹 눌러 바꿀 수도 있어요.<br>브랜드 사이트로 이동은 <span class="fx-ico">${EXT}</span> 아이콘을 누르면 돼요.</p>`;
+  /* 비어 있을 땐 안내 문구·계정 안내 없이 빈 폴더만 */
+  if(!list.length) return `<div class="ix-empty">${FOLD_EMPTY}아직 비어 있어요.<br>마음에 드는 브랜드에 하트를 눌러보세요.</div>`+(AUTH.user?acctBox():'');
+  return head+`<div class="ix-list">${list.map(ixRow).join('')}</div>`+acctBox();
 }
 /* 목록만 다시 그리면서 자리 이동은 부드럽게 (FLIP) */
 function ixRedraw(){
@@ -1036,6 +1192,7 @@ function ixCommit(id,row){
   const i=STATE.bm.indexOf(id); if(i<0) return;
   STATE.bm.splice(i,1); if(STATE.no) delete STATE.no[id]; if(STATE.subs) delete STATE.subs[id]; if(STATE.pins) STATE.pins=STATE.pins.filter(x=>x!==id);
   save(); drawFav(); drawNewsBtn(); if(VIEW.id) drawRail();
+  document.querySelectorAll(`.fcard[data-id="${id}"] .fx-st`).forEach(s=>s.classList.remove('on'));
   if(row) row.remove();
   if(TAB==='bookmarks' && !document.querySelector('.ix-row')) render();
 }
@@ -1075,7 +1232,7 @@ function vProfile(){
 }
 
 /* ---------- 시트 ---------- */
-function openSheet(html,re){ $('#sheet').classList.remove('pinky'); $('#sheet').innerHTML='<div class="grab"></div>'+html; $('#sheet').classList.add('show'); $('#scrim').classList.add('show'); openSheet.cur=re||null; }
+function openSheet(html,re){ $('#sheet').classList.remove('pinky','fx-sheet'); $('#sheet').innerHTML='<div class="grab"></div>'+html; $('#sheet').classList.add('show'); $('#scrim').classList.add('show'); openSheet.cur=re||null; }
 function closeSheet(){ $('#sheet').classList.remove('show'); $('#scrim').classList.remove('show'); openSheet.cur=null; }
 $('#scrim').onclick=closeSheet;
 
@@ -1294,13 +1451,24 @@ function openViewer(id,fromBack){
   $('#site').innerHTML=PHASE2?siteHTML(m):brandPage(m); $('#site').scrollTop=0;
   if(wasOpen) swapAnim($('#site'));
   $('#viewer').classList.add('show'); document.body.style.overflow='hidden';
-  drawRail();
+  drawRail(); drawVFoot();
 }
 /* 사이트가 아이프레임 표시를 막아 둔 브랜드는 brands.json에 "embed": false 를 넣으면 무드 이미지로 대신 보여줘요 */
 function brandPage(m){
   if(m.url && m.embed!==false)
     return `<iframe class="bp-frame" src="${esc(m.url)}" title="${esc(m.name)}" loading="eager" allow="fullscreen; clipboard-write; payment"></iframe>`;
   return m.img?`<div class="bp"><div class="bp-img"><img src="${esc(m.img)}" alt=""></div></div>`:'';
+}
+/* 상세 하단: 이전·다음 브랜드로 넘기기 (홈 순서 그대로, 뒤로가기 기록은 쌓지 않음) */
+function drawVFoot(){
+  const el=$('#vfoot'); if(!el) return;
+  const ids=(PHASE2?FEED:BRAND_IDS).filter(id=>byId(id)), n=ids.length, i=ids.indexOf(VIEW.id);
+  if(i<0||n<2){ el.innerHTML=''; el.style.display='none'; return; }
+  el.style.display='';
+  const p=ids[(i-1+n)%n], q=ids[(i+1)%n];
+  el.innerHTML=`<button class="fx-pl s fx-vp" onclick="openViewer('${p}',true)" aria-label="이전 브랜드 ${esc(byId(p).name)}"><span>←</span><b>${esc(byId(p).name)}</b></button>
+    <span class="fx-vno">${String(i+1).padStart(2,'0')} / ${String(n).padStart(2,'0')}</span>
+    <button class="fx-pl s fx-vn" onclick="openViewer('${q}',true)" aria-label="다음 브랜드 ${esc(byId(q).name)}"><b>${esc(byId(q).name)}</b><span>→</span></button>`;
 }
 function endVisit(){ const s=(performance.now()-VIEW.t0)/1000; if(s>4&&byId(VIEW.id)&&!byId(VIEW.id).custom) signal(VIEW.id,Math.min(2,s*.06),'stay'); }
 function viewerBack(){ const h=VIEW.hist||[]; if(h.length){ openViewer(h.pop(),true); } else closeViewer(); }
@@ -1327,7 +1495,7 @@ const IG='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 /* 확인된 공식 계정만 직접 연결, 나머지는 인스타그램 검색으로 */
 const IG_HANDLE={'paloma - wool':'palomawool','NIKE':'nike','BALENCIAGA':'balenciaga','LEMAIRE':'lemaire_official','ISSEY MIYAKE':'isseymiyakeofficial'};
 function igUrl(m){ const h=(m.ig||'').replace(/^@/,'')||IG_HANDLE[m.name]; return h?`https://www.instagram.com/${h}/`:`https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(m.name)}`; }
-function drawFav(){ const b=$('#favBtn'); if(b) b.innerHTML=HANGER+' '+STATE.bm.length; }
+function drawFav(){ const b=$('#favBtn'); if(b) b.innerHTML=HANGER+' '+STATE.bm.length; const c=$('#navCnt'); if(c) c.textContent=STATE.bm.length; }
 function openMall(id){ openViewer(id); }
 
 /* ---------- 소식받기 (세일·신상·재입고 알림) ---------- */
@@ -1381,12 +1549,13 @@ function openNews(){
   $('#sheet').classList.add('pinky');
 }
 function drawNewsBtn(){ const b=$('#newsBtn'); if(!b) return; const u=STATE.unread||0; b.innerHTML=BELL+(u?`<span class="dot">${u}</span>`:''); }
-function goHome(){ if(VIEW.id) closeViewer(); closeSheet(); TAB='discover'; render(); scrollTo(0,0); }
+function toTop(){ scrollTo(0,0); const v=$('#view'); if(v) v.scrollTop=0; }
+function goHome(){ if(VIEW.id) closeViewer(); closeSheet(); TAB='discover'; render(); toTop(); }
 
 function floatHearts(btn){
   const r=btn.querySelector('svg').getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height*0.45;
   const D='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z';
-  const spec=[{k:.62,c:'#E5243F',d:0,sw:8,dur:3600},{k:.5,c:'#fff',d:450,sw:-7,dur:3900},{k:.46,c:'#f6c9d4',d:900,sw:6,dur:3500}];
+  const spec=[{k:.62,c:'#e0559b',d:0,sw:8,dur:3600},{k:.5,c:'#f8bdd8',d:450,sw:-7,dur:3900},{k:.46,c:'#f6c9d4',d:900,sw:6,dur:3500}];
   spec.forEach(o=>{
     const sz=Math.round(r.width*o.k);
     const w=document.createElement('div'); w.className='lh';
@@ -1425,30 +1594,76 @@ const MAIL='<svg class="hg" viewBox="0 0 24 24" fill="none" stroke="currentColor
 const CONTACT_EMAIL='team@pocket-index.com';
 const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
 function vContact(){
-  return `<div class="contact"><div class="c-emoji" aria-hidden="true">🫧🩷</div>
-  <p>Pocket Index는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.</p>
-  <p>서비스 문의, 기능 요청, 브랜드 노출 제안도<br>모두 아래 메일로 보내주세요.<br>꼼꼼히 읽고 답장 드릴게요.</p>
+  return `<div class="contact"><span class="fx-pl s">CONTACT</span>
+  <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드려요.</p>
+  <div class="fx-mailf">${ENVELOPE}
   <div class="c-mail">${CONTACT_EMAIL}</div>
-  <button class="c-copy" onclick="copyEmail()">복사하기</button></div>
-  <div class="share"><button class="s-btn" onclick="shareSite()">Pocket Index 친구에게 공유하기</button></div>`;
+  <button class="fx-pl s pk" onclick="copyEmail()">복사하기</button></div></div>
+  <div class="share"><button class="s-btn" onclick="shareSite()">POCKET INDEX 친구에게 공유하기</button></div>
+  <a class="pp-link" href="privacy.html">개인정보처리방침</a>`;
 }
 const SITE_URL='https://pocket-index.com/';
+/* 복사·공유 완료: 글자 없이 체크 하나만 (읽기 프로그램용 문구는 숨겨서 전달) */
+function checkToast(label){
+  let el=$('#ck');
+  if(!el){ el=document.createElement('div'); el.id='ck'; el.className='fx-ck'; el.setAttribute('role','status'); el.setAttribute('aria-live','polite');
+    el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 12.4l3.6 3.6 7.4-7.6"/></svg><span class="fx-sr"></span>'; document.body.appendChild(el); }
+  el.querySelector('.fx-sr').textContent=label||'완료';
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  clearTimeout(checkToast.t); checkToast.t=setTimeout(()=>el.classList.remove('show'),1300);
+}
 function copyText(text,msg){
-  const done=()=>toast(msg);
+  const done=()=>checkToast(msg);
   if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(text).then(done,fallback); else fallback();
   function fallback(){ const t=document.createElement('textarea'); t.value=text; t.setAttribute('readonly',''); t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('복사하지 못했어요'); } t.remove(); }
 }
+/* ---------- 공유 시트 ----------
+   카카오톡 공유: 카카오 디벨로퍼스 > 내 애플리케이션 > 앱 키 > "JavaScript 키"를 아래에 넣고,
+   [플랫폼 > Web > 사이트 도메인]에 https://pocket-index.com 을 등록하면 켜져요.
+   비어 있으면 카카오톡 버튼은 휴대폰 공유창(없으면 링크 복사)으로 대신해요. */
+const KAKAO_JS_KEY='';
+const KAKAO_SDK='https://t1.kakaocdn.net/kakao_js_sdk/2.8.4/kakao.min.js';
+const KAKAO_SRI='sha384-BGX7Wb16GmRFagri4bLJV2DgipVZaU2AI812GZtHtHzzDQJnfHasDXN5houxv45w';
+function loadKakao(){
+  if(window.Kakao&&Kakao.isInitialized&&Kakao.isInitialized()) return Promise.resolve(window.Kakao);
+  if(loadKakao.p) return loadKakao.p;
+  loadKakao.p=new Promise((ok,no)=>{ const s=document.createElement('script'); s.src=KAKAO_SDK; s.integrity=KAKAO_SRI; s.crossOrigin='anonymous';
+    s.onload=()=>{ try{ if(!Kakao.isInitialized()) Kakao.init(KAKAO_JS_KEY); ok(window.Kakao); }catch(e){ no(e); } };
+    s.onerror=no; document.head.appendChild(s); }).catch(e=>{ loadKakao.p=null; throw e; });
+  return loadKakao.p;
+}
+function nativeShare(){ return navigator.share?navigator.share({title:'POCKET INDEX',url:SITE_URL}).then(()=>true,e=>e&&e.name==='AbortError'):Promise.resolve(false); }
+function shareKakao(){
+  closeSheet();
+  if(!KAKAO_JS_KEY){ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요. 카카오톡에 붙여넣어 보내 주세요'); }); return; }
+  loadKakao().then(K=>K.Share.sendScrap({requestUrl:SITE_URL})).catch(()=>{ nativeShare().then(ok=>{ if(!ok) copyText(SITE_URL,'링크를 복사했어요'); }); });
+}
+function shareCopy(){ closeSheet(); copyText(SITE_URL,'링크를 복사했어요'); }
+function shareMore(){ closeSheet(); nativeShare(); }
+const SH_ICON={
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M3.8 6.3 12 13l8.2-6.7"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.8 3.5h3l-6.6 7.5 7.8 9.5h-6.1l-4.8-5.9-5.5 5.9h-3l7.1-8L2 3.5h6.2l4.3 5.4zm-1 15.3h1.7L7.3 5.1H5.5z"/></svg>',
+  more:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>'};
 function shareSite(){
-  if(navigator.share){ navigator.share({title:'Pocket Index',url:SITE_URL}).catch(e=>{ if(e&&e.name!=='AbortError') copyText(SITE_URL,'링크를 복사했어요'); }); }
-  else copyText(SITE_URL,'링크를 복사했어요. 친구에게 붙여넣어 보내 주세요');
+  const u=encodeURIComponent(SITE_URL), txt=encodeURIComponent('POCKET INDEX — 매일 새로운 브랜드가 폴더로 도착해요');
+  const item=(cls,icon,label,attr)=>`<${attr.startsWith('href')?'a':'button'} class="fx-sh-i ${cls}" ${attr}><span class="fx-sh-c">${icon}</span><span>${label}</span></${attr.startsWith('href')?'a':'button'}>`;
+  openSheet(`<p class="fx-sh-t">POCKET INDEX 공유하기</p><div class="fx-sh">
+    ${item('kk',KAKAO_SYM,'카카오톡','onclick="shareKakao()"')}
+    ${item('',SH_ICON.link,'링크 복사','onclick="shareCopy()"')}
+    ${item('',SH_ICON.mail,'메일',`href="mailto:?subject=POCKET%20INDEX&body=${u}" onclick="closeSheet()"`)}
+    ${item('',SH_ICON.x,'X',`href="https://x.com/intent/post?text=${txt}&url=${u}" target="_blank" rel="noopener" onclick="closeSheet()"`)}
+    ${navigator.share?item('',SH_ICON.more,'더보기','onclick="shareMore()"'):''}
+  </div>`);
+  $('#sheet').classList.add('fx-sheet');
 }
 function copyEmail(){
-  const done=()=>toast('메일 주소를 복사했어요');
+  const done=()=>checkToast('메일 주소를 복사했어요');
   if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(CONTACT_EMAIL).then(done,fallback); else fallback();
   function fallback(){ const t=document.createElement('textarea'); t.value=CONTACT_EMAIL; t.setAttribute('readonly',''); t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('주소를 길게 눌러 복사해 주세요'); } t.remove(); }
 }
 if(!PHASE2) document.documentElement.classList.add('p1');
-function navTo(k){ if(VIEW.id) closeViewer(); closeSheet(); TAB=k; render(); scrollTo(0,0); }
+function navTo(k){ if(VIEW.id) closeViewer(); closeSheet(); TAB=k; render(); toTop(); }
 function swapAnim(el){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }
 let LASTTAB=null;
 function render(){
@@ -1457,7 +1672,8 @@ function render(){
   if(LASTTAB!==null && LASTTAB!==TAB) swapAnim($('#view')); LASTTAB=TAB;
   if(TAB==='discover') mountFeed();
   drawFav(); drawNewsBtn();
-  $('#nav').innerHTML=TABS.map(([k,l,ic])=>`<button class="${k===TAB?'on':''}" aria-label="${l}" onclick="navTo('${k}')">${ic}</button>`).join('');
+  $('#nav').innerHTML=PHASE2?TABS.map(([k,l,ic])=>`<button class="${k===TAB?'on':''}" aria-label="${l}" onclick="navTo('${k}')">${ic}</button>`).join('')
+    :[['discover','Home'],['bookmarks','Index'],['contact','Contact']].map(([k,l])=>`<button class="fx-pl ${k===TAB?'on':''}" onclick="navTo('${k}')">${l}${k==='bookmarks'?` <span class="fx-cnt" id="navCnt">${STATE.bm.length}</span>`:''}</button>`).join('');
 }
 
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='urlIn') addByUrl(); if(e.key==='Escape'){ if($('#sheet').classList.contains('show')) closeSheet(); else if(VIEW.id) closeViewer(); } });
@@ -1470,7 +1686,7 @@ function loadBrands(){
     BRAND_IDS=[];
     (Array.isArray(list)?list:[]).forEach(b=>{ if(!b||!b.name) return;
       const id='b:'+String(b.name).trim().toLowerCase().replace(/\s+/g,'-');
-      const m={id,name:String(b.name).trim(),url:b.url||'',ig:b.instagram||'',img:b.image||'',embed:b.embed,tags:[],real:true,opened:NOW,price:'',blurb:'',menu:[]};
+      const m={id,name:String(b.name).trim(),url:b.url||'',ig:b.instagram||'',img:b.image||'',embed:b.embed,isNewB:!!b.new,tags:[],real:true,opened:NOW,price:'',blurb:'',menu:[]};
       const k=MALLS.findIndex(x=>x.id===id); if(k>=0) MALLS[k]=m; else MALLS.push(m);
       if(!BRAND_IDS.includes(id)) BRAND_IDS.push(id); });
     if(!PHASE2){ // 목록에서 빠진 브랜드는 저장 목록에서도 정리
@@ -1481,8 +1697,8 @@ function loadBrands(){
 
 /* ---------- 계정 (SSO) : Supabase ----------
    SUPABASE_URL / SUPABASE_ANON_KEY 를 채우면 하트 탭에 로그인 안내가 나타나요. 비워 두면 안내 자체가 숨겨져요. */
-const SUPABASE_URL='';
-const SUPABASE_ANON_KEY='';
+const SUPABASE_URL='https://kmfjdtrnmpwdrocovgrb.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_l7bp2nNo13DLs5xn87f5BA_2YSfUR1r';
 var AUTH={ready:false,user:null,sb:null};
 const INAPP=/Instagram|FBAN|FBAV|KAKAOTALK|NAVER\(inapp|Line\//i.test(navigator.userAgent);
 const KAKAO_SYM='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#000" d="M12 3.6C6.9 3.6 2.8 6.8 2.8 10.8c0 2.6 1.7 4.8 4.3 6.1l-.9 3.4c-.1.3.3.6.6.4l4-2.7c.4 0 .8.1 1.2.1 5.1 0 9.2-3.2 9.2-7.2S17.1 3.6 12 3.6z"/></svg>';
@@ -1493,7 +1709,7 @@ const NAVER_SYM='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="tr
 const APPLE_SYM='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#000" d="M16.4 12.7c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.1 2.5-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3-.1 1.7-.8 3.2-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.4-4.1zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4z"/></svg>';
 function acctBox(){
   if(!AUTH.ready) return '';
-  if(AUTH.user) return `<div class="acct on"><span>계정에 저장되고 있어요.</span><button onclick="signOut()">로그아웃</button></div>`;
+  if(AUTH.user) return `<div class="acct on"><span>계정에 저장되고 있어요.</span><span class="acct-act"><button onclick="signOut()">로그아웃</button><button onclick="deleteAccount()">탈퇴</button></span></div>`;
   const btn=(k,sym,label)=>`<button class="sso" onclick="signIn('${k}')">${sym}<span>${label}</span></button>`;
   return `<div class="acct"><p>${STATE.bm.length?`지금 담은 하트 ${STATE.bm.length}개는 이 브라우저에만 남아 있어요.<br>로그인하면 그대로 계정으로 옮겨져요.`:'지금 하트는 이 브라우저에만 남아 있어요.<br>계정에 담아두면 어디서든 다시 볼 수 있어요.'}</p>
     <div class="acct-btns">
@@ -1501,13 +1717,22 @@ function acctBox(){
       ${NAVER_PROVIDER?btn(NAVER_PROVIDER,NAVER_SYM,'네이버로 계속하기'):''}
       ${INAPP?'':btn('google',GOOGLE_SYM,'Google로 계속하기')}
       ${btn('apple',APPLE_SYM,'Apple로 계속하기')}
-    </div></div>`;
+    </div><a class="acct-pp" href="privacy.html">개인정보처리방침</a></div>`;
 }
 function signIn(provider){ if(!AUTH.sb) return;
   AUTH.sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}}); }
 /* 로그아웃하면 이 브라우저에 남은 목록을 비워요. 계정에 이미 저장돼 있으니 다음 로그인 때 그대로 돌아와요.
    (안 비우면 같은 브라우저에서 다른 사람이 로그인할 때 앞사람 하트가 섞여요) */
 function clearLocalList(){ STATE.bm=[]; STATE.pins=[]; STATE.subs={}; STATE.no={}; STATE.nextNo=1; try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){} }
+/* 회원 탈퇴: DB 함수 delete_my_account()가 계정을 지우면 user_state(하트)도 함께 지워져요 */
+async function deleteAccount(){ if(!AUTH.sb||!AUTH.user) return;
+  if(!confirm('탈퇴하면 계정과 계정에 저장된 하트가 모두 지워지고, 되돌릴 수 없어요.\n정말 탈퇴할까요?')) return;
+  clearTimeout(SYNC_T);
+  const {error}=await AUTH.sb.rpc('delete_my_account');
+  if(error){ toast('탈퇴하지 못했어요. 잠시 후 다시 시도해 주세요'); return; }
+  AUTH.user=null; try{ await AUTH.sb.auth.signOut({scope:'local'}); }catch(e){}
+  clearLocalList(); drawFav(); render(); toast('탈퇴가 완료됐어요. 그동안 고마웠어요');
+}
 function signOut(){ if(!AUTH.sb) return; AUTH.sb.auth.signOut().then(()=>{ AUTH.user=null; clearLocalList(); drawFav(); if(TAB==='bookmarks') render(); }); }
 /* 서버 ↔ 기기 합치기: 서버 순서 먼저, 이 기기에만 있던 건 뒤에 */
 function mergeIn(remote){
