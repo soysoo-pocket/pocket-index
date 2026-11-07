@@ -676,7 +676,7 @@ nav button.fx-pl.on .fx-cnt{background:#fff;color:var(--fx-fg)}
 .ix-row .ix-pin.on .hg{color:var(--pk)}
 .ix-row .ix-pin.on .hg path{fill:var(--pk)}
 .ix-empty{border:0;color:var(--fx-mu);margin-top:6px;padding:20px 0}
-.fx-bigf{width:110px;height:86px;display:block;margin:0 auto 10px}
+.fx-bigf{width:64px;height:50px;display:block;margin:0 auto 12px}
 .acct{margin:30px 4px 10px;padding:0;border:0;color:var(--fx-fg)}
 .acct p{color:var(--fx-fg);font-size:12.5px;font-weight:300;line-height:1.6;letter-spacing:-.01em}
 .sso{background:#fff;border:1.3px solid var(--fx-fg);height:40px}
@@ -1595,7 +1595,7 @@ const CONTACT_EMAIL='team@pocket-index.com';
 const TABS=[['discover','홈',ICON.disc],['bookmarks','인덱스',HANGER],['boards','보드',ICON.board],['profile','프로필',ICON.me],['contact','문의',MAIL]].filter(t=>PHASE2||t[0]==='discover'||t[0]==='bookmarks'||t[0]==='contact');
 function vContact(){
   return `<div class="contact"><span class="fx-pl s">CONTACT</span>
-  <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드려요.</p>
+  <p class="fx-ct1 fx-ct2">POCKET INDEX는 여러분의 의견으로 자라요.<br>문의와 요청은 언제든 환영이에요.<br>브랜드 노출 제안도 메일로 보내주시면 꼼꼼히 읽고 답장을 드릴게요.</p>
   <div class="fx-mailf">${ENVELOPE}
   <div class="c-mail">${CONTACT_EMAIL}</div>
   <button class="fx-pl s pk" onclick="copyEmail()">복사하기</button></div></div>
